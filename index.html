@@ -25,6 +25,12 @@
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
+  <!-- Audio Styling -->
+  <!-- <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"
+    />
+    <link href="assets/css/audiocss.css" rel="stylesheet"> -->
 </head>
 
 <body class="index-page">
@@ -151,23 +157,22 @@
               <div class="cta-form">
                 <h3>Schedule a Free Counselling Meeting</h3>
                 <p>Fill out the form below and our team will contact you within 24 hours.</p>
-                <form action="forms/consultation.php" method="post" class="php-email-form">
+                <form id="meeting_form">
                   <div class="form-group">
                     <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
                   </div>
                   <div class="form-group mt-3">
-                    <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
+                    <input type="number"  maxlength="11" class="form-control" required name="phone" placeholder="Your Phone">
                   </div>
-                  <div class="form-group mt-3">
-                    <input type="text" class="form-control" name="phone" placeholder="Your Phone">
+                  <div class="form-group">
+                    <textarea class="form-control" name="message" placeholder="Intro" cols="16" rows="4"></textarea>
                   </div>
                   <div class="my-3">
-                    <div class="loading">Loading</div>
                     <div class="error-message"></div>
-                    <div class="sent-message">Your message has been sent. Thank you!</div>
+                    <div class="sent-message"></div>
                   </div>
                   <div class="text-center">
-                    <button type="submit">Get Started</button>
+                    <input id="submit" type="submit" value="Get Started" class="btn btn-success" />
                   </div>
                 </form>
               </div>
@@ -220,62 +225,35 @@
             }
           </script>
           <div class="swiper-wrapper">
-
             <div class="swiper-slide">
+              <div class="team-card">
+                <div class="team-image">
+                  <a href="audio.html">
+                  <img src="assets/img/dove.jpg" class="img-fluid" alt="" loading="lazy">
+                </a>
+                </div>
+                <div class="team-content">
+                  <a href="audio.html">
+                  <h3>Audio Messages</h3>
+                  <span class="description-title">GREATER BETHESDA 2024</span>
+                  <p><strong>Theme:</strong> Behold His Glory</p>
+                </a>
+                </div>
+              </div><!-- End Team Card -->
+            </div><!-- End slide item -->
+
+            <!-- <div class="swiper-slide">
               <div class="team-card">
                 <div class="team-image">
                   <img src="assets/img/dove.jpg" class="img-fluid" alt="" loading="lazy">
                 </div>
                 <div class="team-content">
-                  <h3>Marcus Wilson</h3>
-                  <span>Chief Technology Officer</span>
-                  <p>tus nec ullamcorper mattis.</p>
+                  <h3>Video Messages</h3>
+                  <span></span>
+                  <p></p>
                 </div>
-              </div><!-- End Team Card -->
-            </div><!-- End slide item -->
-
-            <div class="swiper-slide">
-              <div class="team-card">
-                <div class="team-image">
-                  <img src="assets/img/person/person-f-5.webp" class="img-fluid" alt="" loading="lazy">
-                  <div class="team-overlay">
-                    <div class="social-links">
-                      <a href="#"><i class="bi bi-twitter-x"></i></a>
-                      <a href="#"><i class="bi bi-facebook"></i></a>
-                      <a href="#"><i class="bi bi-instagram"></i></a>
-                      <a href="#"><i class="bi bi-linkedin"></i></a>
-                    </div>
-                  </div>
-                </div>
-                <div class="team-content">
-                  <h3>Sophia Reynolds</h3>
-                  <span>Product Designer</span>
-                  <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-                </div>
-              </div><!-- End Team Card -->
-            </div><!-- End slide item -->
-
-            <div class="swiper-slide">
-              <div class="team-card">
-                <div class="team-image">
-                  <img src="assets/img/person/person-m-8.webp" class="img-fluid" alt="" loading="lazy">
-                  <div class="team-overlay">
-                    <div class="social-links">
-                      <a href="#"><i class="bi bi-twitter-x"></i></a>
-                      <a href="#"><i class="bi bi-facebook"></i></a>
-                      <a href="#"><i class="bi bi-instagram"></i></a>
-                      <a href="#"><i class="bi bi-linkedin"></i></a>
-                    </div>
-                  </div>
-                </div>
-                <div class="team-content">
-                  <h3>Daniel Chen</h3>
-                  <span>Marketing Specialist</span>
-                  <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                </div>
-              </div><!-- End Team Card -->
-            </div><!-- End slide item -->
-
+              </div>
+            </div> -->
           </div>
           <div class="swiper-pagination"></div>
           <div class="swiper-button-prev"></div>
@@ -346,8 +324,8 @@
                 <div class="testimonial-author">
                   <img src="assets/img/dove.jpg" alt="Author" class="img-fluid rounded-circle" loading="lazy">
                   <div>
-                    <h5> - - - </h5>
-                    <span><strong>Theme:</strong> - - - </span>
+                    <h5>Upcoming</h5>
+                    <span><strong>Theme:</strong> Upcoming </span>
                   </div>
                 </div>
               </div>
@@ -565,7 +543,7 @@
           <div>
             <h4>Contact</h4>
             <p>
-              <strong> <i class="bi bi-telephone icon"></i></strong>&nbsp;<span>+2347063781991, +2349064457846, +2348052306367</span><br>
+              <strong> <i class="bi bi-telephone icon"></i></strong>&nbsp;<span>+2349064457846, +2348052306367</span><br>
               <strong> <i class="bi bi-envelope icon"></i></strong>&nbsp;<span>sulejadisciples@gmail.com</span><br>
             </p>
           </div>
@@ -615,6 +593,7 @@
   <div id="preloader"></div>
 
   <!-- Vendor JS Files -->
+  <script src="assets/js/jquery.js"></script>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/php-email-form/validate.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
@@ -623,6 +602,31 @@
 
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/sweetalert2@11.js"></script>
+  <script>
+  $('#meeting_form').on('submit', function(event) {
+    event.preventDefault();
+      let formData = $(this).serialize();
+      $.ajax({
+        url: "http://localhost/api/index.php",
+        method: "POST",
+        data: formData,
+
+        beforeSend: function() {
+          $('#submit').attr('disabled', 'disabled');
+          $('#submit').val('Processing, pls wait ...');
+
+        },
+        success: function(response) {
+          $('#submit').attr('disabled', true);
+          $('#submit').val(response);
+          $('#meeting_form').trigger("reset");
+          //$('#msg').append(response);
+
+        }
+      });
+  });
+  </script>
 
 </body>
 
