@@ -23,7 +23,7 @@ const songs = [
 	];
 
 // Keep track of song
-let songIndex = 0;
+let songIndex = 3;
 
 // Initially load song details into DOM
 loadSong(songs[songIndex]);
