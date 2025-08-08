@@ -78,10 +78,11 @@ body {
 }
 
 .action-btn {
+  border-radius: 50%;
   background-color: #fff;
   border: 0;
   color: #dfdbdf;
-  font-size: 20px;
+  font-size: 16px;
   cursor: pointer;
   padding: 4px;
   margin: 0 20px;
@@ -89,7 +90,7 @@ body {
 
 .action-btn.action-btn-big {
   color: #cdc2d0;
-  font-size: 30px;
+  font-size: 16px;
 }
 
 .action-btn:focus {
@@ -101,9 +102,9 @@ body {
   border-radius: 15px 15px 0 0;
   position: absolute;
   top: 0;
-  left: 20px;
+  left: 10px;
   width: calc(100% - 40px);
-  padding: 10px 10px 10px 150px;
+  padding: 10px 10px 10px 50px;
   opacity: 0;
   transform: translateY(0%);
   transition: transform 0.3s ease-in, opacity 0.3s ease-in;
