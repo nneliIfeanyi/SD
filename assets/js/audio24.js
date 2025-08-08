@@ -19,7 +19,8 @@ const songs = [
 	'THE VAIN GLORY DAY3',
 	'THE FUTURE GLORY',
 	'Behold His Glory',
-	//'EYES ON THE FUTURE GLORY'
+	//'EYES ON THE FUTURE GLORY',
+	'ADVICE TO THE FAMILY'
 	];
 
 // Keep track of song
