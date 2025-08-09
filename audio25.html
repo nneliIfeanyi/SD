@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -237,15 +236,25 @@
         <!-- Main JS File -->
         <script src="assets/js/main.js"></script>
         <script>
-            // Listen for any audio "play" event on the page
+            const wrappers = document.querySelectorAll('.audio-wrapper');
+
             document.addEventListener('play', function (e) {
                 const audios = document.querySelectorAll('audio');
                 audios.forEach(audio => {
                     if (audio !== e.target) {
                         audio.pause();
                     }
+                    // Remove animation from all wrappers
+                    audio.parentElement.classList.remove('playing');
                 });
-            }, true); // use capture phase so it catches all play events
+                // Add animation to the one playing
+                e.target.parentElement.classList.add('playing');
+            }, true);
+
+            // When audio is paused, remove animation
+            document.addEventListener('pause', function (e) {
+                e.target.parentElement.classList.remove('playing');
+            }, true);
         </script>
 
 </body>
