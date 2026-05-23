@@ -1,168 +1,80 @@
-/* @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+ :root {
+   --dark-green: rgba(0, 87, 81, 0.8);
+   --light-green: rgba(0, 87, 81, 0.8);
+ }
 
-* {
-  box-sizing: border-box;
-}
+ .navbar {
+   background-color: white;
+   box-shadow: 0 2px 10px rgba(0, 100, 0, 0.1);
+ }
 
-body {
-  background: linear-gradient(to bottom, #01615a, #018880, #03a89f);
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Lato', sans-serif;
-  margin: 0;
-}
+ .nav-link,
+ .navbar-brand {
+   color: var(--dark-green) !important;
+   font-weight: 600;
+ }
 
-.music-container {
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 20px 20px 0 rgba(252, 169, 169, 0.6);
-  display: flex;
-  padding: 20px 30px;
-  position: relative;
-  margin-top: 200px ;
-  z-index: 10;
-}
+ .hero {
+   background: linear-gradient(rgba(0, 87, 81, 0.8), rgba(0, 87, 81, 0.8)), url('../img/av2.png') center/cover;
+   color: white;
+   display: flex;
+   align-items: center;
+ }
 
-.img-container {
-  position: relative;
-  width: 110px;
-}
+ .btn-green {
+   background-color: var(--dark-green);
+   color: white;
+   border: none;
+   padding: 12px 30px;
+   font-weight: 600;
+ }
 
-.img-container::after {
-  content: '';
-  background-color: #fff;
-  border-radius: 50%;
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  transform: translate(-50%, 50%);
-}
+ .btn-green:hover {
+   background-color: var(--light-green);
+   color: white;
+ }
 
-.img-container img {
-  border-radius: 50%;
-  object-fit: cover;
-  height: 110px;
-  width: inherit;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  animation: rotate 3s linear infinite;
+ .audio-card {
+   transition: all 0.3s ease;
+   border: none;
+   box-shadow: 0 4px 15px rgba(0, 100, 0, 0.1);
+ }
 
-  animation-play-state: paused;
-}
+ .audio-card:hover {
+   transform: translateY(-8px);
+   box-shadow: 0 10px 25px rgba(0, 100, 0, 0.15);
+ }
 
-.music-container.play .img-container img {
-  animation-play-state: running;
-}
+ .player {
+   position: fixed;
+   bottom: 0;
+   left: 0;
+   right: 0;
+   background: white;
+   border-top: 3px solid var(--dark-green);
+   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+   z-index: 1000;
+ }
 
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
+ .progress-bar {
+   background-color: var(--dark-green);
+ }
 
-  to {
-    transform: rotate(360deg);
-  }
-}
+ .section-title {
+   color: var(--dark-green);
+   position: relative;
+ }
 
-.navigation {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-}
+ .section-title:after {
+   content: '';
+   position: absolute;
+   width: 60px;
+   height: 3px;
+   background: var(--light-green);
+   bottom: -8px;
+   left: 0;
+ }
 
-.action-btn {
-  border-radius: 50%;
-  background-color: #fff;
-  border: 0;
-  color: #dfdbdf;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 4px;
-  margin: 0 20px;
-}
-
-.action-btn.action-btn-big {
-  color: #cdc2d0;
-  font-size: 16px;
-}
-
-.action-btn:focus {
-  outline: 0;
-}
-
-.music-info {
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 15px 15px 0 0;
-  position: absolute;
-  top: 0;
-  left: 20px;
-  width: calc(100% - 40px);
-  padding: 10px 10px 10px 100px;
-  opacity: 0;
-  transform: translateY(0%);
-  transition: transform 0.3s ease-in, opacity 0.3s ease-in;
-  z-index: 0;
-}
-
-.music-container.play .music-info {
-  opacity: 1;
-  transform: translateY(-100%);
-}
-
-.music-info h4 {
-  margin: 0;
-}
-
-.progress-container {
-  background: #fff;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 10px 0;
-  height: 4px;
-  width: 100%;
-}
-
-.progress {
-  background-color: #fe8daa;
-  border-radius: 5px;
-  height: 100%;
-  width: 0%;
-  transition: width 0.1s linear;
-} */
-
-/* .audio-wrapper {
-  display: inline-block;
-  padding: 10px;
-  margin: 5px;
-  border-radius: 8px;
-  background: #f0f0f0;
-  transition: background 0.3s ease;
-} */
-
-/* Animation for currently playing */
-.playing {
-  /* background: #d1e7ff; */
-  animation: pulse 1s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.6);
-  }
-
-  70% {
-    box-shadow: 0 0 0 7px rgba(0, 123, 255, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
-  }
-}
-
+ .dark-green-text {
+   color: var(--dark-green);
+ }
