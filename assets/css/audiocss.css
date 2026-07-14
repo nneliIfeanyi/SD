@@ -17,6 +17,7 @@
  .hero {
    background: linear-gradient(rgba(0, 87, 81, 0.8), rgba(0, 87, 81, 0.8)), url('../img/av2.png') center/cover;
    color: white;
+   height: 46px;
    display: flex;
    align-items: center;
  }

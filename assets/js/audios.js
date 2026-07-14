@@ -27,6 +27,41 @@ let audios = [
 		category: "Greater Bethesda 2025",
 		duration: "1:07:05",
 		url: "music/DAY 2 - TALK 2_IN HIS STEPS.mp3"
+	},
+	{
+		id: 5,
+		title: "DAY 2 - TALK 3_THE HIDDEN TREASURE",
+		category: "Greater Bethesda 2025",
+		duration: "1:12:22",
+		url: "music/DAY 2 - TALK 3_THE HIDDEN TREASURE.mp3"
+	},
+	{
+		id: 6,
+		title: "DAY 2 - TALK 4_WHILE MEN SLEPT",
+		category: "Greater Bethesda 2025",
+		duration: "1:04:50",
+		url: "music/DAY 2 - TALK 4_WHILE MEN SLEPT.mp3"
+	},
+	{
+		id: 7,
+		title: "JESUS THE PATH TO OUR GLORY",
+		category: "Greater Bethesda 2024",
+		duration: "1:13:56",
+		url: "music/JESUS THE PATH TO OUR GLORY.mp3"
+	},
+	{
+		id: 8,
+		title: "FORCESES OF THE KINGDOM",
+		category: "Greater Bethesda 2024",
+		duration: "1:26:46",
+		url: "music/FORCESES OF THE KINGDOM.mp3"
+	},
+	{
+		id: 9,
+		title: "EYES ON THE FUTURE GLORY ",
+		category: "Greater Bethesda 2024",
+		duration: "1:20:40",
+		url: "music/EYES ON THE FUTURE GLORY .mp3"
 	}
 
 ];
@@ -35,16 +70,16 @@ let currentTrackIndex = 0;
 let isPlaying = false;
 let audioElement = null;
 
+
 function renderAudios(filteredAudios) {
 	const grid = document.getElementById('audioGrid');
 	grid.innerHTML = '';
-
 	filteredAudios.forEach((audio, index) => {
 		const cardHTML = `
                     <div class="col">
                         <div class="card audio-card h-100">
                             <div class="card-body">
-							<i class="card-img-top bi bi-mic fs-1 " style="height: 50px; object-fit: cover;"></i>
+							<i class="card-img-top bi bi-mic fs-1" style="height: 50px; object-fit: cover;"></i>
                                 <h5 class="card-title">${audio.title}</h5>
                                 <p class="card-text text-muted">${audio.category}</p>
                                 <div class="d-flex justify-content-between align-items-center">
@@ -60,6 +95,7 @@ function renderAudios(filteredAudios) {
 		grid.innerHTML += cardHTML;
 	});
 }
+
 
 function playTrack(index) {
 	currentTrackIndex = index;
