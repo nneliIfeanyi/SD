@@ -26,6 +26,7 @@
 
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
+  <link rel="stylesheet" href="articles/css/styles.css">
 </head>
 
 <body class="index-page">
@@ -69,24 +70,6 @@
                 and perfect gift, it is Him who loves the world and gave His only begotten son for her sake, He is the
                 saviour of mankind, who heals us from our sicknesses and diseases, to Him alone be all the Glory and
                 Honour and Power and Dominion and Majesty Forever Amen.</p>
-              <!-- <div class="hero-btns">
-                <a href="#consultation" class="btn btn-primary">Get a Free Consultation</a>
-                <a href="#services" class="btn btn-outline">Our Services</a>
-              </div> -->
-              <!-- <div class="hero-stats">
-                <div class="stat-item">
-                  <h3><span data-purecounter-start="0" data-purecounter-end="15" data-purecounter-duration="1" class="purecounter"></span>+</h3>
-                  <p>Years Experience</p>
-                </div>
-                <div class="stat-item">
-                  <h3><span data-purecounter-start="0" data-purecounter-end="500" data-purecounter-duration="1" class="purecounter"></span>+</h3>
-                  <p>Clients Worldwide</p>
-                </div>
-                <div class="stat-item">
-                  <h3><span data-purecounter-start="0" data-purecounter-end="98" data-purecounter-duration="1" class="purecounter"></span>%</h3>
-                  <p>Success Rate</p>
-                </div>
-              </div> -->
             </div>
           </div>
           <div class="col-lg-6">
@@ -161,24 +144,24 @@
               <div class="cta-form">
                 <h3>Schedule a Free Counselling Meeting</h3>
                 <p>Fill out the form below and our team will contact you within 24 hours.</p>
-                <form name="contact" netlify>
+                <form id="meeting_form">
                   <div class="form-group">
-                    <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Your Name">
                   </div>
                   <div class="form-group mt-3">
-                    <input type="number" maxlength="11" class="form-control" required name="phone"
+                    <input type="number" id="phone" maxlength="11" class="form-control" name="phone"
                       placeholder="Your Phone">
                   </div>
                   <div class="form-group mt-3">
-                    <textarea class="form-control" name="message" placeholder="Whats on your mind" cols="16"
-                      rows="4"></textarea>
+                    <textarea class="form-control" id="message" name="message" placeholder="Whats on your mind"
+                      cols="16" rows="4"></textarea>
                   </div>
                   <div class="my-3">
-                    <div class="error-message"></div>
-                    <div class="sent-message"></div>
+                    <div id="error-message" class="text-danger"></div>
+                    <div id="sent-message" class="text-success"></div>
                   </div>
                   <div class="text-center">
-                    <input id="submit" type="submit" value="Get Started" class="btn btn-success" />
+                    <input id="submitBtn" type="submit" value="Get Started" class="btn btn-success" />
                   </div>
                 </form>
               </div>
@@ -193,78 +176,58 @@
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Resources</h2>
-        <div><span>Check Our</span> <span class="description-title">Sermons</span></div>
+        <div><span>Online</span> <span class="description-title">Publications</span></div>
       </div><!-- End Section Title -->
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="team-slider swiper init-swiper">
-          <script type="application/json" class="swiper-config">
-            {
-              "loop": true,
-              "speed": 800,
-              "autoplay": {
-                "delay": 5000
-              },
-              "slidesPerView": 1,
-              "spaceBetween": 30,
-              "pagination": {
-                "el": ".swiper-pagination",
-                "type": "bullets",
-                "clickable": true
-              },
-              "navigation": {
-                "nextEl": ".swiper-button-next",
-                "prevEl": ".swiper-button-prev"
-              },
-              "breakpoints": {
-                "576": {
-                  "slidesPerView": 2
-                },
-                "992": {
-                  "slidesPerView": 3
-                },
-                "1200": {
-                  "slidesPerView": 4
-                }
-              }
-            }
-          </script>
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <div class="team-card">
-                <a href="talks.htm">
-                  <div class=" team-image">
-                    <img src="assets/img/flyer-edit1.jpg" class="img-fluid" alt="" loading="lazy">
-                  </div>
-                  <div class="team-content">
-                    <h3>Audio Messages</h3>
-                    <span class="description-title">GREATER BETHESDA 2024</span>
-                    <p><strong>Play Sermons <i class="bi bi-arrow-right"></i></strong></p>
-                  </div>
-                </a>
-              </div><!-- End Team Card -->
-            </div><!-- End slide item -->
-
-            <div class="swiper-slide">
-              <div class="team-card">
-                <a href="talks.htm">
-                  <div class="team-image">
-                    <img src="assets/img/flyer-edit2.jpg" class="img-fluid" alt="" loading="lazy">
-                  </div>
-                  <div class="team-content">
-                    <h3>Audio Messages</h3>
-                    <span class="description-title">GREATER BETHESDA 2025</span>
-                    <p><strong>Play Sermons <i class="bi bi-arrow-right"></i></strong></p>
-                  </div>
-                </a>
-              </div><!-- End Team Card -->
-            </div><!-- End slide item -->
-            <div class="swiper-pagination"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
+        <div class="row">
+          <div class="col-md-6 col-lg-4">
+            <div class="blog-card">
+              <div class="blog-card-title">Our Making</div>
+              <div class="blog-card-meta">
+                <i class="bi bi-person-circle"></i>
+                <span>Vincent Eze</span>
+                <span aria-hidden="true">·</span>
+                <span>Jul 9, 2026</span>
+              </div>
+              <div class="blog-card-excerpt">Today the first line of our making is our recovery, our deliverance and
+                our healing.<br /> <!--Read More -->
+                <a href="articles/?id=1382" class="stretched-link">More <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="blog-card">
+              <div class="blog-card-title">Purity of Heart</div>
+              <div class="blog-card-meta">
+                <i class="bi bi-person-circle"></i>
+                <span>Vincent Eze</span>
+                <span aria-hidden="true">·</span>
+                <span>Jul 7, 2026</span>
+              </div>
+              <div class="blog-card-excerpt">The pure heart is the heart where God is respected and honoured.<br />
+                <!--Read More -->
+                <a href="articles/?id=1309" class="stretched-link">More <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="blog-card">
+              <div class="blog-card-title">Love Your Neighbour As Yourself</div>
+              <div class="blog-card-meta">
+                <i class="bi bi-person-circle"></i>
+                <span>Vincent Eze</span>
+                <span aria-hidden="true">·</span>
+                <span>Jul 6, 2026</span>
+              </div>
+              <div class="blog-card-excerpt">Your neighbour may not always be a good or easy going person. He or she may
+                likely be a hard or difficult person. <br /><!--Read More -->
+                <a href="articles/?id=1663" class="stretched-link">More <i class="bi bi-arrow-right"></i></a>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
     </section><!-- /Team Section -->
 
     <!-- Testimonials Section -->
@@ -479,41 +442,6 @@
               </div>
             </div>
           </div>
-
-          <!-- <div class="col-lg-7">
-            <div class="contact-form-wrapper">
-              <form action="forms/contact.php" method="post" class="php-email-form">
-                <div class="row">
-                  <div class="col-md-6 form-group">
-                    <label for="name">Your Name</label>
-                    <input type="text" name="name" class="form-control" id="name" placeholder="John Doe" required="">
-                  </div>
-                  <div class="col-md-6 form-group mt-3 mt-md-0">
-                    <label for="email">Your Email</label>
-                    <input type="email" class="form-control" name="email" id="email" placeholder="john@example.com" required="">
-                  </div>
-                </div>
-                <div class="form-group mt-3">
-                  <label for="subject">Subject</label>
-                  <input type="text" class="form-control" name="subject" id="subject" placeholder="I loved your book!" required="">
-                </div>
-                <div class="form-group mt-3">
-                  <label for="message">Message</label>
-                  <textarea class="form-control" name="message" rows="7" placeholder="Your message here..." required=""></textarea>
-                </div>
-
-                <div class="my-3">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
-                </div>
-
-                <div class="text-center">
-                  <button type="submit">Send Message</button>
-                </div>
-              </form>
-            </div>
-          </div> -->
         </div>
       </div>
     </section><!-- /Contact Section -->
@@ -553,17 +481,6 @@
             </p>
           </div>
         </div>
-
-        <!-- <div class="col-lg-3 col-md-6 d-flex">
-          <i class="bi bi-clock icon"></i>
-          <div>
-            <h4>Opening Hours</h4>
-            <p>
-              <strong>Mon-Sat:</strong> <span>11AM - 23PM</span><br>
-              <strong>Sunday</strong>: <span>Closed</span>
-            </p>
-          </div>
-        </div> -->
 
         <!-- <div class="col-lg-3 col-md-6">
           <h4>Follow Us</h4>
@@ -610,27 +527,56 @@
   <script src="assets/js/main.js"></script>
   <script src="assets/js/sweetalert2@11.js"></script>
   <script>
-    $('#meeting_form').on('submit', function (event) {
-      event.preventDefault();
-      let formData = $(this).serialize();
-      $.ajax({
-        url: "http://localhost/api/index.php",
-        method: "POST",
-        data: formData,
+    // Form Submission
+    const API_BASE = "https://api.leadstar.com.ng/blog";
+    document.getElementById('meeting_form').addEventListener('submit', async (e) => {
+      e.preventDefault();
 
-        beforeSend: function () {
-          $('#submit').attr('disabled', 'disabled');
-          $('#submit').val('Processing, pls wait ...');
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim;
+      const message = document.getElementById('message').value.trim;
+      const errMsgContainer = document.getElementById('error-message');
+      const sentMsgContainer = document.getElementById('sent-message');
+      errMsgContainer.textContent = '';
+      sentMsgContainer.textContent = '';
+      // Client-side Validation
+      if (!name || !phone || !message) {
+        // alert("Please fill all required fields");
+        errMsgContainer.textContent = 'Please fill all required fields';
+        return;
+      }
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('phone', phone);
+      formData.append('message', message);
 
-        },
-        success: function (response) {
-          $('#submit').attr('disabled', true);
-          $('#submit').val(response);
-          $('#meeting_form').trigger("reset");
-          //$('#msg').append(response);
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Processing...";
+      sentMsgContainer.textContent = 'Meeting booked successfully with ' + name;
+      // try {
+      //   const res = await fetch(`${API_BASE}/booking.php`, {
+      //     method: 'POST',
+      //     body: formData
+      //   });
 
-        }
-      });
+      //   const data = await res.json();
+
+      //   if (data.success) {
+      //     //alert("Booking submitted successfully!");
+      //     sentMsgContainer.textContent = 'Meeting booked successfully! Our team will reach you as soon as possible.';
+      //     document.getElementById('meeting_form').reset();
+      //   } else {
+      //     console.log("Error: " + (data.error));
+      //     errMsgContainer.textContent = 'Failed to book the meeting. Please try again.'
+      //   }
+      // } catch (err) {
+      //   //alert("Connection error. Please try again.");
+      //   errMsgContainer.textContent = 'Connection error. Please try again.';
+      // } finally {
+      //   submitBtn.disabled = false;
+      //   submitBtn.textContent = "Get Started";
+      // }
     });
   </script>
 

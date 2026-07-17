@@ -265,6 +265,9 @@
     [els.listDesktop, els.listMobile].forEach((container) => {
       container.querySelectorAll(".blog-card").forEach((card) => {
         card.addEventListener("click", onCardActivate);
+        if (els.offcanvasEl.contains(card)) {
+          offcanvas.hide();
+        }
       });
       container.onscroll = handleListScroll;
     });
