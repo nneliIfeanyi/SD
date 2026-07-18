@@ -222,7 +222,7 @@
               </div>
               <div class="blog-card-excerpt">Your neighbour may not always be a good or easy going person. He or she may
                 likely be a hard or difficult person. <br /><!--Read More -->
-                <a href="articles/?id=1663" class="stretched-link">More <i class="bi bi-arrow-right"></i></a>
+                <a href="articles/?id=1163" class="stretched-link">More <i class="bi bi-arrow-right"></i></a>
               </div>
             </div>
           </div>
@@ -533,8 +533,8 @@
       e.preventDefault();
 
       const name = document.getElementById('name').value.trim();
-      const phone = document.getElementById('phone').value.trim;
-      const message = document.getElementById('message').value.trim;
+      const phone = document.getElementById('phone').value.trim();
+      const message = document.getElementById('message').value.trim();
       const errMsgContainer = document.getElementById('error-message');
       const sentMsgContainer = document.getElementById('sent-message');
       errMsgContainer.textContent = '';
@@ -553,30 +553,29 @@
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
       submitBtn.textContent = "Processing...";
-      sentMsgContainer.textContent = 'Meeting booked successfully with ' + name;
-      // try {
-      //   const res = await fetch(`${API_BASE}/booking.php`, {
-      //     method: 'POST',
-      //     body: formData
-      //   });
+      try {
+        const res = await fetch(`${API_BASE}/booking.php`, {
+          method: 'POST',
+          body: formData
+        });
 
-      //   const data = await res.json();
+        const data = await res.json();
 
-      //   if (data.success) {
-      //     //alert("Booking submitted successfully!");
-      //     sentMsgContainer.textContent = 'Meeting booked successfully! Our team will reach you as soon as possible.';
-      //     document.getElementById('meeting_form').reset();
-      //   } else {
-      //     console.log("Error: " + (data.error));
-      //     errMsgContainer.textContent = 'Failed to book the meeting. Please try again.'
-      //   }
-      // } catch (err) {
-      //   //alert("Connection error. Please try again.");
-      //   errMsgContainer.textContent = 'Connection error. Please try again.';
-      // } finally {
-      //   submitBtn.disabled = false;
-      //   submitBtn.textContent = "Get Started";
-      // }
+        if (data.success) {
+          //alert("Booking submitted successfully!");
+          sentMsgContainer.textContent = 'Meeting booked successfully! Our team will reach you as soon as possible.';
+          document.getElementById('meeting_form').reset();
+        } else {
+          console.log("Error: " + (data.error));
+          errMsgContainer.textContent = 'Failed to book the meeting. Please try again.'
+        }
+      } catch (err) {
+        //alert("Connection error. Please try again.");
+        errMsgContainer.textContent = 'Connection error. Please try again.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Get Started";
+      }
     });
   </script>
 
