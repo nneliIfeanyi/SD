@@ -552,7 +552,8 @@
 
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
-      submitBtn.textContent = "Processing...";
+
+      submitBtn.value = "Processing...";
       try {
         const res = await fetch(`${API_BASE}/booking.php`, {
           method: 'POST',
@@ -574,7 +575,7 @@
         errMsgContainer.textContent = 'Connection error. Please try again.';
       } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = "Get Started";
+        submitBtn.value = "Get Started";
       }
     });
   </script>
