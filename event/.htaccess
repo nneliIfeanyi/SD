@@ -1,0 +1,19 @@
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Deny access to sensitive files
+<FilesMatch "\.(sql|md|json|lock|env)$">
+    Require all denied
+</FilesMatch>
+
+# Protect config and includes
+RewriteEngine On
+RewriteRule ^(config|includes|database)/ - [F,L]
+
+# Prevent directory listing
+Options -Indexes

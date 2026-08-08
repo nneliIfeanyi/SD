@@ -1,0 +1,53 @@
+.videos-archive-page .header {
+    --background-color: rgba(0, 87, 81, 0.9);
+}
+
+.videos-archive {
+    min-height: 72vh;
+}
+
+.videos-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.videos-toolbar #yearFilter {
+    min-width: 180px;
+}
+
+.videos-summary {
+    color: color-mix(in srgb, var(--default-color), transparent 22%);
+    font-weight: 500;
+}
+
+.videos-pagination-wrap {
+    margin-top: 28px;
+}
+
+.videos-pagination-wrap .page-item .page-link {
+    color: var(--accent-color);
+}
+
+.videos-pagination-wrap .page-item.active .page-link {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #fff;
+}
+
+.videos-archive .youtube-video-card {
+    height: 100%;
+}
+
+@media (max-width: 576px) {
+    .videos-toolbar {
+        align-items: stretch;
+    }
+
+    .videos-toolbar #yearFilter {
+        min-width: 100%;
+    }
+}
