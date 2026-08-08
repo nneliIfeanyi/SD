@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Events Management Script
  */
 
@@ -30,7 +30,7 @@ async function loadEvents() {
     const tableBody = document.getElementById('eventsTableBody');
 
     try {
-        let url = `/api/events/index.php?page=${currentPage}&limit=12`;
+        let url = `/api2/events/index.php?page=${currentPage}&limit=12`;
         if (search) url += `&search=${encodeURIComponent(search)}`;
         if (status) url += `&status=${encodeURIComponent(status)}`;
 
@@ -57,8 +57,8 @@ async function loadEvents() {
             tableBody.innerHTML = events.map(ev => `
                 <tr>
                     <td class="fw-semibold">${ev.name}</td>
-                    <td>${ev.venue || '—'}</td>
-                    <td>${formatDate(ev.start_date)} – ${formatDate(ev.end_date)}</td>
+                    <td>${ev.venue || 'â€”'}</td>
+                    <td>${formatDate(ev.start_date)} â€“ ${formatDate(ev.end_date)}</td>
                     <td>${statusBadge(ev.status)}</td>
                     <td><span class="badge text-bg-light">${ev.participant_count || 0}</span></td>
                     <td>
@@ -93,7 +93,7 @@ function eventCard(ev) {
                         <i class="bi bi-geo-alt me-1"></i>${ev.venue || 'TBA'}
                     </p>
                     <p class="card-text text-muted small">
-                        <i class="bi bi-calendar me-1"></i>${formatDate(ev.start_date)} – ${formatDate(ev.end_date)}
+                        <i class="bi bi-calendar me-1"></i>${formatDate(ev.start_date)} â€“ ${formatDate(ev.end_date)}
                     </p>
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <span class="badge text-bg-primary">${ev.participant_count || 0} registered</span>
@@ -166,10 +166,10 @@ async function saveEvent(e) {
 
     try {
         if (id) {
-            await PUT(`/api/events/single.php?id=${id}`, payload);
+            await PUT(`/api2/events/single.php?id=${id}`, payload);
             showToast('Event updated successfully');
         } else {
-            await POST('/api/events/index.php', payload);
+            await POST('/api2/events/index.php', payload);
             showToast('Event created successfully');
         }
         bootstrap.Modal.getInstance(document.getElementById('eventModal')).hide();
@@ -181,7 +181,7 @@ async function saveEvent(e) {
 
 window.editEvent = async function (id) {
     try {
-        const res = await GET(`/api/events/single.php?id=${id}`);
+        const res = await GET(`/api2/events/single.php?id=${id}`);
         openEventModal(res.data);
     } catch (err) {
         showToast(err.message, 'error');
@@ -191,10 +191,11 @@ window.editEvent = async function (id) {
 window.deleteEvent = async function (id) {
     if (!confirmAction('Delete this event? This cannot be undone.')) return;
     try {
-        await DEL(`/api/events/single.php?id=${id}`);
+        await DEL(`/api2/events/single.php?id=${id}`);
         showToast('Event deleted');
         loadEvents();
     } catch (err) {
         showToast(err.message, 'error');
     }
 };
+

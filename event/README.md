@@ -1,8 +1,8 @@
-# Event Management Admin Dashboard
+﻿# Event Management Admin Dashboard
 
 A complete, production-ready **Event Registration & Participant Management System** for religious organizations (or any organization) that runs multiple events per year.
 
-Built as **one scalable system** — events are dynamic (created from the database). Add new events anytime without changing code.
+Built as **one scalable system** â€” events are dynamic (created from the database). Add new events anytime without changing code.
 
 ---
 
@@ -10,14 +10,14 @@ Built as **one scalable system** — events are dynamic (created from the databa
 
 - **Authentication** with role-based access (Super Admin, Registration Officer, Attendance Officer, Reports Officer)
 - **Dashboard** with live stats, charts (Chart.js), recent activity
-- **Event Management** – full CRUD, status control, multi-day support
-- **Participant Management** – master records reusable across events
-- **Registration** – auto-generated registration numbers, duplicate prevention
-- **Attendance** – check-in / check-out for single-day and multi-day events
-- **Reports** – gender, state, event participation, CSV export
-- **Settings** – organization profile, theme
+- **Event Management** â€“ full CRUD, status control, multi-day support
+- **Participant Management** â€“ master records reusable across events
+- **Registration** â€“ auto-generated registration numbers, duplicate prevention
+- **Attendance** â€“ check-in / check-out for single-day and multi-day events
+- **Reports** â€“ gender, state, event participation, CSV export
+- **Settings** â€“ organization profile, theme
 - **Responsive** professional UI (Bootstrap 5) with light/dark mode
-- **Secure** – prepared statements, password hashing, session protection, CSRF tokens, role middleware
+- **Secure** â€“ prepared statements, password hashing, session protection, CSRF tokens, role middleware
 
 ---
 
@@ -39,7 +39,7 @@ See **INSTALL.md** for full installation steps.
 2. Import `database/schema.sql`
 3. Configure `config/constants.php` and `config/database.php` (or use environment variables)
 4. Point your web server document root (or virtual host) to the `event-dashboard` folder
-5. Open the app in browser → Login
+5. Open the app in browser â†’ Login
 
 **Demo login:** `superadmin` / `Admin@123`
 
@@ -49,17 +49,17 @@ See **INSTALL.md** for full installation steps.
 
 ```
 event-dashboard/
-├── api/                  # REST API endpoints
-├── assets/css|js|img     # Frontend assets
-├── config/               # DB, auth, constants
-├── database/             # schema.sql
-├── includes/             # Shared layout (header, sidebar, footer)
-├── pages/                # UI pages
-├── uploads/              # Event banners, participant photos, logo
-├── index.php
-├── .htaccess
-├── README.md
-└── INSTALL.md
+â”œâ”€â”€ api2/                  # REST API endpoints
+â”œâ”€â”€ assets/css|js|img     # Frontend assets
+â”œâ”€â”€ config/               # DB, auth, constants
+â”œâ”€â”€ database/             # schema.sql
+â”œâ”€â”€ includes/             # Shared layout (header, sidebar, footer)
+â”œâ”€â”€ pages/                # UI pages
+â”œâ”€â”€ uploads/              # Event banners, participant photos, logo
+â”œâ”€â”€ index.php
+â”œâ”€â”€ .htaccess
+â”œâ”€â”€ README.md
+â””â”€â”€ INSTALL.md
 ```
 
 ---
@@ -68,13 +68,13 @@ event-dashboard/
 
 | Module        | Super Admin | Registration | Attendance | Reports |
 |---------------|:-----------:|:------------:|:----------:|:-------:|
-| Dashboard     | ✓           | ✓            | ✓          | ✓       |
-| Events        | ✓           | ✓            |            |         |
-| Participants  | ✓           | ✓            |            |         |
-| Registration  | ✓           | ✓            |            |         |
-| Attendance    | ✓           | ✓            | ✓          |         |
-| Reports       | ✓           | ✓            |            | ✓       |
-| Settings      | ✓           |              |            |         |
+| Dashboard     | âœ“           | âœ“            | âœ“          | âœ“       |
+| Events        | âœ“           | âœ“            |            |         |
+| Participants  | âœ“           | âœ“            |            |         |
+| Registration  | âœ“           | âœ“            |            |         |
+| Attendance    | âœ“           | âœ“            | âœ“          |         |
+| Reports       | âœ“           | âœ“            |            | âœ“       |
+| Settings      | âœ“           |              |            |         |
 
 ---
 
@@ -82,20 +82,21 @@ event-dashboard/
 
 All endpoints return JSON: `{ "success": true|false, "message": "...", "data": ... }`
 
-- `POST /api/auth/login.php`
-- `POST /api/auth/logout.php`
-- `GET  /api/auth/me.php`
-- `GET|POST /api/events/index.php`
-- `GET|PUT|DELETE /api/events/single.php?id=`
-- `GET|POST /api/participants/index.php`
-- `GET|PUT|DELETE /api/participants/single.php?id=`
-- `GET|POST /api/registration/index.php`
-- `GET|POST /api/attendance/index.php`
-- `GET /api/reports/index.php?type=summary|gender|state|...`
-- `GET|PUT /api/settings/organization.php`
+- `POST /api2/auth/login.php`
+- `POST /api2/auth/logout.php`
+- `GET  /api2/auth/me.php`
+- `GET|POST /api2/events/index.php`
+- `GET|PUT|DELETE /api2/events/single.php?id=`
+- `GET|POST /api2/participants/index.php`
+- `GET|PUT|DELETE /api2/participants/single.php?id=`
+- `GET|POST /api2/registration/index.php`
+- `GET|POST /api2/attendance/index.php`
+- `GET /api2/reports/index.php?type=summary|gender|state|...`
+- `GET|PUT /api2/settings/organization.php`
 
 ---
 
 ## License
 
 For internal / organizational use. Customize as needed.
+

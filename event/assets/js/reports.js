@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Reports Module Script
  */
 
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadEventsForFilter() {
     try {
-        const res = await GET('/api/events/index.php?limit=50');
+        const res = await GET('/api2/events/index.php?limit=50');
         const select = document.getElementById('reportEventFilter');
         const select2 = document.getElementById('exportEventSelect');
         const opts = '<option value="">All Events</option>' +
@@ -33,7 +33,7 @@ async function loadEventsForFilter() {
 async function loadGenderChart() {
     const eventId = document.getElementById('reportEventFilter')?.value || '';
     try {
-        let url = '/api/reports/index.php?type=gender';
+        let url = '/api2/reports/index.php?type=gender';
         if (eventId) url += `&event_id=${eventId}`;
         const res = await GET(url);
         const data = res.data || [];
@@ -66,7 +66,7 @@ async function loadGenderChart() {
 async function loadStateChart() {
     const eventId = document.getElementById('reportEventFilter')?.value || '';
     try {
-        let url = '/api/reports/index.php?type=state';
+        let url = '/api2/reports/index.php?type=state';
         if (eventId) url += `&event_id=${eventId}`;
         const res = await GET(url);
         const data = res.data || [];
@@ -106,7 +106,7 @@ async function loadEventRegistrations() {
     }
 
     try {
-        const res = await GET(`/api/reports/index.php?type=event_registrations&event_id=${eventId}`);
+        const res = await GET(`/api2/reports/index.php?type=event_registrations&event_id=${eventId}`);
         const rows = res.data || [];
         const tbody = document.getElementById('eventReportBody');
 
@@ -116,8 +116,8 @@ async function loadEventRegistrations() {
                 <td>${r.surname} ${r.first_name}</td>
                 <td>${r.gender}</td>
                 <td>${r.phone}</td>
-                <td>${r.church || '—'}</td>
-                <td>${r.state || '—'}</td>
+                <td>${r.church || 'â€”'}</td>
+                <td>${r.state || 'â€”'}</td>
                 <td class="small">${formatDate(r.registration_date)}</td>
             </tr>
         `).join('') || `<tr><td colspan="7" class="text-center text-muted">No data</td></tr>`;
@@ -139,3 +139,4 @@ function exportRegistrations() {
     exportToCSV(rows, `registrations-${Date.now()}.csv`);
     showToast('CSV downloaded', 'success');
 }
+

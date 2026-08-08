@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Reusable API Module
  * Handles all HTTP requests with authentication & error handling
  */
@@ -93,22 +93,22 @@ export const DEL  = (url, opts) => request('DELETE', url, null, opts);
  * Auth helpers
  */
 export async function login(username, password) {
-    return POST('/api/auth/login.php', { username, password });
+    return POST('/api2/auth/login.php', { username, password });
 }
 
 export async function logout() {
-    return POST('/api/auth/logout.php', {});
+    return POST('/api2/auth/logout.php', {});
 }
 
 export async function me() {
-    return GET('/api/auth/me.php');
+    return GET('/api2/auth/me.php');
 }
 
 /**
  * Format date for display
  */
 export function formatDate(dateStr, withTime = false) {
-    if (!dateStr) return '—';
+    if (!dateStr) return 'â€”';
     const d = new Date(dateStr);
     if (isNaN(d)) return dateStr;
     const opts = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -174,3 +174,4 @@ export function exportToCSV(rows, filename = 'export.csv') {
     link.download = filename;
     link.click();
 }
+

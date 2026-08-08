@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Settings Module Script
  */
 
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadOrganization() {
     try {
-        const res = await GET('/api/settings/organization.php');
+        const res = await GET('/api2/settings/organization.php');
         const o = res.data || {};
         document.getElementById('orgName').value = o.name || '';
         document.getElementById('orgAddress').value = o.address || '';
@@ -36,9 +36,10 @@ async function saveOrganization(e) {
     };
 
     try {
-        await PUT('/api/settings/organization.php', payload);
+        await PUT('/api2/settings/organization.php', payload);
         showToast('Settings saved successfully');
     } catch (err) {
         showToast(err.message || 'Failed to save', 'error');
     }
 }
+

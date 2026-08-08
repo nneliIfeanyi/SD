@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Dashboard Page Script
  */
 
@@ -6,7 +6,7 @@ import { GET, formatDate, showToast } from './api.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        const res = await GET('/api/reports/index.php?type=summary');
+        const res = await GET('/api2/reports/index.php?type=summary');
         const { stats, monthly_registrations, event_participation } = res.data;
 
         // Stat cards
@@ -91,7 +91,7 @@ function renderEventChart(data) {
 
 async function loadRecentActivity() {
     try {
-        const res = await GET('/api/registration/index.php?limit=5');
+        const res = await GET('/api2/registration/index.php?limit=5');
         const tbody = document.getElementById('recentActivityBody');
         if (!tbody) return;
 
@@ -104,7 +104,7 @@ async function loadRecentActivity() {
             <tr>
                 <td><code>${r.registration_number}</code></td>
                 <td>${r.surname} ${r.first_name}</td>
-                <td>${r.event_name || '—'}</td>
+                <td>${r.event_name || 'â€”'}</td>
                 <td class="text-muted small">${formatDate(r.registration_date, true)}</td>
             </tr>
         `).join('');
@@ -112,3 +112,4 @@ async function loadRecentActivity() {
         // silent
     }
 }
+

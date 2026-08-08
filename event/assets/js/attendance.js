@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Attendance Module Script
  */
 
@@ -58,10 +58,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadEvents() {
     try {
-        const res = await GET('/api/events/index.php?limit=50');
+        const res = await GET('/api2/events/index.php?limit=50');
         const select = document.getElementById('attSelectEvent');
         if (!select) return;
-        select.innerHTML = '<option value="">— Select Event —</option>' +
+        select.innerHTML = '<option value="">â€” Select Event â€”</option>' +
             (res.data || []).map(e => `<option value="${e.id}">${e.name}</option>`).join('');
     } catch (err) {
         showToast('Failed to load events', 'error');
@@ -80,13 +80,13 @@ async function loadDays() {
     }
 
     try {
-        const res = await GET(`/api/events/single.php?id=${selectedEventId}`);
+        const res = await GET(`/api2/events/single.php?id=${selectedEventId}`);
         const days = res.data?.attendance_days || [];
         const isMulti = res.data?.is_multi_day == 1;
 
         if (isMulti && days.length) {
             dayWrap?.classList.remove('d-none');
-            daySelect.innerHTML = '<option value="">— Select Day —</option>' +
+            daySelect.innerHTML = '<option value="">â€” Select Day â€”</option>' +
                 days.map(d => `<option value="${d.id}">Day ${d.day_number}: ${d.label || d.day_date}</option>`).join('');
         } else {
             dayWrap?.classList.add('d-none');
@@ -110,7 +110,7 @@ async function loadAttendance() {
     const search = document.getElementById('searchAtt')?.value || '';
 
     try {
-        let url = `/api/attendance/index.php?event_id=${selectedEventId}&limit=30`;
+        let url = `/api2/attendance/index.php?event_id=${selectedEventId}&limit=30`;
         if (selectedDayId) url += `&day_id=${selectedDayId}`;
         if (search) url += `&search=${encodeURIComponent(search)}`;
 
@@ -122,8 +122,8 @@ async function loadAttendance() {
                 <td><code>${a.registration_number}</code></td>
                 <td>${a.surname} ${a.first_name}</td>
                 <td>${a.phone}</td>
-                <td>${a.day_label || (a.day_number ? 'Day ' + a.day_number : '—')}</td>
-                <td class="small">${a.check_in ? formatDate(a.check_in, true) : '—'}</td>
+                <td>${a.day_label || (a.day_number ? 'Day ' + a.day_number : 'â€”')}</td>
+                <td class="small">${a.check_in ? formatDate(a.check_in, true) : 'â€”'}</td>
                 <td>
                     ${a.check_in
                 ? '<span class="badge text-bg-success">Present</span>'
@@ -147,7 +147,7 @@ async function loadLookupSuggestions() {
     }
 
     try {
-        const res = await GET(`/api/registration/index.php?event_id=${selectedEventId}&search=${encodeURIComponent(lookup)}&limit=8`);
+        const res = await GET(`/api2/registration/index.php?event_id=${selectedEventId}&search=${encodeURIComponent(lookup)}&limit=8`);
         const rows = res.data || [];
 
         if (!rows.length) {
@@ -218,7 +218,7 @@ async function doAttendance() {
     };
 
     try {
-        const res = await POST('/api/attendance/index.php', payload);
+        const res = await POST('/api2/attendance/index.php', payload);
         showToast(res.message || 'Recorded', 'success');
         document.getElementById('attLookup').value = '';
         document.getElementById('attSelectedRegistrationId').value = '';
@@ -229,3 +229,4 @@ async function doAttendance() {
         showToast(err.message || 'Failed', 'error');
     }
 }
+

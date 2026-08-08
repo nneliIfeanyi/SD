@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Registration Module Script
  */
 
@@ -39,11 +39,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadOpenEvents() {
     try {
-        const res = await GET('/api/events/index.php?status=open&limit=50');
+        const res = await GET('/api2/events/index.php?status=open&limit=50');
         const select = document.getElementById('selectEvent');
         if (!select) return;
 
-        select.innerHTML = '<option value="">— Select Event —</option>' +
+        select.innerHTML = '<option value="">â€” Select Event â€”</option>' +
             (res.data || []).map(e => `<option value="${e.id}">${e.name} (${e.start_date})</option>`).join('');
     } catch (err) {
         showToast('Failed to load events', 'error');
@@ -62,7 +62,7 @@ async function loadRegistrations() {
     const search = document.getElementById('searchReg')?.value || '';
 
     try {
-        let url = `/api/registration/index.php?event_id=${selectedEventId}&page=${currentPage}&limit=15`;
+        let url = `/api2/registration/index.php?event_id=${selectedEventId}&page=${currentPage}&limit=15`;
         if (search) url += `&search=${encodeURIComponent(search)}`;
 
         const res = await GET(url);
@@ -74,7 +74,7 @@ async function loadRegistrations() {
                 <td>${r.surname} ${r.first_name} ${r.other_name || ''}</td>
                 <td>${r.gender}</td>
                 <td>${r.phone}</td>
-                <td>${r.church || '—'}</td>
+                <td>${r.church || 'â€”'}</td>
                 <td class="small text-muted">${formatDate(r.registration_date, true)}</td>
                 <td><span class="badge text-bg-success">${r.status}</span></td>
             </tr>
@@ -124,7 +124,7 @@ async function searchParticipants() {
         return;
     }
     try {
-        const res = await GET(`/api/participants/index.php?search=${encodeURIComponent(q)}&limit=8`);
+        const res = await GET(`/api2/participants/index.php?search=${encodeURIComponent(q)}&limit=8`);
         box.innerHTML = (res.data || []).map(p => `
             <button type="button" class="list-group-item list-group-item-action" data-id="${p.id}"
                 data-name="${p.surname} ${p.first_name}">
@@ -170,7 +170,7 @@ async function submitRegistration(e) {
     }
 
     try {
-        const res = await POST('/api/registration/index.php', payload);
+        const res = await POST('/api2/registration/index.php', payload);
         showToast(`Registration successful! Number: ${res.data.registration_number}`, 'success');
         bootstrap.Modal.getInstance(document.getElementById('registrationModal')).hide();
         loadRegistrations();
@@ -178,3 +178,4 @@ async function submitRegistration(e) {
         showToast(err.message || 'Registration failed', 'error');
     }
 }
+

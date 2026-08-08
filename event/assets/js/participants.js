@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Participants Management Script
  */
 
@@ -29,7 +29,7 @@ async function loadParticipants() {
     const tbody = document.getElementById('participantsTableBody');
 
     try {
-        let url = `/api/participants/index.php?page=${currentPage}&limit=15`;
+        let url = `/api2/participants/index.php?page=${currentPage}&limit=15`;
         if (search) url += `&search=${encodeURIComponent(search)}`;
         if (gender) url += `&gender=${encodeURIComponent(gender)}`;
 
@@ -46,9 +46,9 @@ async function loadParticipants() {
                 </td>
                 <td>${p.gender}</td>
                 <td>${p.phone}</td>
-                <td>${p.email || '—'}</td>
-                <td>${p.church || '—'}</td>
-                <td>${p.state || '—'}</td>
+                <td>${p.email || 'â€”'}</td>
+                <td>${p.church || 'â€”'}</td>
+                <td>${p.state || 'â€”'}</td>
                 <td><span class="badge text-bg-light">${p.registration_count || 0}</span></td>
                 <td>
                     <div class="btn-group btn-group-sm">
@@ -135,10 +135,10 @@ async function saveParticipant(e) {
 
     try {
         if (id) {
-            await PUT(`/api/participants/single.php?id=${id}`, payload);
+            await PUT(`/api2/participants/single.php?id=${id}`, payload);
             showToast('Participant updated');
         } else {
-            await POST('/api/participants/index.php', payload);
+            await POST('/api2/participants/index.php', payload);
             showToast('Participant created');
         }
         bootstrap.Modal.getInstance(document.getElementById('participantModal')).hide();
@@ -150,7 +150,7 @@ async function saveParticipant(e) {
 
 window.editParticipant = async function (id) {
     try {
-        const res = await GET(`/api/participants/single.php?id=${id}`);
+        const res = await GET(`/api2/participants/single.php?id=${id}`);
         openParticipantModal(res.data);
     } catch (err) {
         showToast(err.message, 'error');
@@ -159,10 +159,10 @@ window.editParticipant = async function (id) {
 
 window.viewParticipant = async function (id) {
     try {
-        const res = await GET(`/api/participants/single.php?id=${id}`);
+        const res = await GET(`/api2/participants/single.php?id=${id}`);
         const p = res.data;
         const regs = (p.registrations || []).map(r =>
-            `<li>${r.event_name} — <code>${r.registration_number}</code> (${formatDate(r.registration_date)})</li>`
+            `<li>${r.event_name} â€” <code>${r.registration_number}</code> (${formatDate(r.registration_date)})</li>`
         ).join('') || '<li class="text-muted">No registrations</li>';
 
         document.getElementById('viewParticipantBody').innerHTML = `
@@ -170,11 +170,11 @@ window.viewParticipant = async function (id) {
                 <div class="col-md-6"><strong>Name:</strong> ${p.surname} ${p.first_name} ${p.other_name || ''}</div>
                 <div class="col-md-3"><strong>Gender:</strong> ${p.gender}</div>
                 <div class="col-md-3"><strong>Phone:</strong> ${p.phone}</div>
-                <div class="col-md-6"><strong>Email:</strong> ${p.email || '—'}</div>
-                <div class="col-md-6"><strong>Church:</strong> ${p.church || '—'}</div>
-                <div class="col-md-6"><strong>State:</strong> ${p.state || '—'}</div>
-                <div class="col-md-6"><strong>Occupation:</strong> ${p.occupation || '—'}</div>
-                <div class="col-12"><strong>Address:</strong> ${p.address || '—'}</div>
+                <div class="col-md-6"><strong>Email:</strong> ${p.email || 'â€”'}</div>
+                <div class="col-md-6"><strong>Church:</strong> ${p.church || 'â€”'}</div>
+                <div class="col-md-6"><strong>State:</strong> ${p.state || 'â€”'}</div>
+                <div class="col-md-6"><strong>Occupation:</strong> ${p.occupation || 'â€”'}</div>
+                <div class="col-12"><strong>Address:</strong> ${p.address || 'â€”'}</div>
                 <div class="col-12"><strong>Registrations:</strong><ul class="mb-0 mt-1">${regs}</ul></div>
             </div>
         `;
@@ -187,10 +187,11 @@ window.viewParticipant = async function (id) {
 window.deleteParticipant = async function (id) {
     if (!confirmAction('Delete this participant? All related registrations will also be removed.')) return;
     try {
-        await DEL(`/api/participants/single.php?id=${id}`);
+        await DEL(`/api2/participants/single.php?id=${id}`);
         showToast('Participant deleted');
         loadParticipants();
     } catch (err) {
         showToast(err.message, 'error');
     }
 };
+
