@@ -6,14 +6,17 @@
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Deny access to sensitive files
+# Deny access to sensitive files only within this folder
 <FilesMatch "\.(sql|md|json|lock|env)$">
     Require all denied
 </FilesMatch>
 
-# Protect config and includes
-RewriteEngine On
-RewriteRule ^(config|includes|database)/ - [F,L]
+# Protect config, includes, and database paths only for the /event/ folder
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} ^/event/ [NC]
+    RewriteRule ^(config|includes|database)/ - [F,L]
+</IfModule>
 
 # Prevent directory listing
 Options -Indexes
