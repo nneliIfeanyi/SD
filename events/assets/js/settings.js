@@ -2,14 +2,24 @@
  * Settings Module Script
  */
 
-import { GET, PUT, showToast } from './api.js';
+import { GET, PUT, showToast, withButtonLoading } from './api.js?v=4';
 
 document.addEventListener('DOMContentLoaded', () => {
     loadOrganization();
-    document.getElementById('orgForm')?.addEventListener('submit', saveOrganization);
+    document.getElementById('orgForm')?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const button = event.submitter || form.querySelector('[type="submit"]');
+        withButtonLoading(button, () => saveOrganization(event), 'Saving...');
+    });
 });
 
 async function loadOrganization() {
+    const form = document.getElementById('orgForm');
+    const fields = form?.querySelectorAll('input, select, textarea, button');
+    form?.classList.add('form-skeleton');
+    form?.setAttribute('aria-busy', 'true');
+    fields?.forEach((field) => { field.disabled = true; });
     try {
         const res = await GET('/settings/organization.php');
         const o = res.data || {};
@@ -20,7 +30,11 @@ async function loadOrganization() {
         document.getElementById('orgWebsite').value = o.website || '';
         document.getElementById('orgTheme').value = o.theme || 'light';
     } catch (err) {
-        showToast('Failed to load settings', 'error');
+        showToast(err.message || 'Failed to load settings', 'error');
+    } finally {
+        form?.classList.remove('form-skeleton');
+        form?.removeAttribute('aria-busy');
+        fields?.forEach((field) => { field.disabled = false; });
     }
 }
 

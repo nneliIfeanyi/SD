@@ -6,6 +6,61 @@
 const API_ORIGIN = (window.APP_API_URL || '').replace(/\/+$/, '');
 export const APP_BASE_URL = new URL('../../', import.meta.url);
 
+export function renderTableSkeleton(tbody, columns, rows = 5) {
+    if (!tbody) return;
+
+    tbody.innerHTML = Array.from({ length: rows }, () => `
+        <tr class="skeleton-row" aria-hidden="true">
+            ${Array.from({ length: columns }, (_, index) => `
+                <td><span class="skeleton-line ${index === 0 ? 'skeleton-line-wide' : ''}"></span></td>
+            `).join('')}
+        </tr>
+    `).join('');
+}
+
+export function renderTableMessage(tbody, columns, message) {
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="${columns}" class="text-center text-muted py-4">${message}</td></tr>`;
+}
+
+export function setChartLoading(canvas, loading) {
+    if (!canvas?.parentElement) return;
+
+    const parent = canvas.parentElement;
+    const existing = parent.querySelector('.chart-skeleton');
+    if (loading && !existing) {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'chart-skeleton';
+        skeleton.setAttribute('role', 'status');
+        skeleton.setAttribute('aria-label', 'Loading chart data');
+        skeleton.innerHTML = '<span></span><span></span><span></span><span></span><span></span>';
+        parent.classList.add('chart-loading-container');
+        parent.insertBefore(skeleton, canvas);
+        canvas.classList.add('invisible');
+    } else if (!loading) {
+        existing?.remove();
+        parent.classList.remove('chart-loading-container');
+        canvas.classList.remove('invisible');
+    }
+}
+
+export async function withButtonLoading(button, action, label = 'Loading...') {
+    if (!button) return action();
+
+    const originalContent = button.innerHTML;
+    button.disabled = true;
+    button.setAttribute('aria-busy', 'true');
+    button.innerHTML = `<span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>${label}`;
+
+    try {
+        return await action();
+    } finally {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+        button.innerHTML = originalContent;
+    }
+}
+
 /**
  * Show Bootstrap toast notification
  */

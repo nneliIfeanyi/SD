@@ -2,7 +2,7 @@
  * Registration Module Script
  */
 
-import { GET, POST, formatDate, showToast, debounce } from './api.js';
+import { GET, POST, formatDate, showToast, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=4';
 
 let selectedEventId = null;
 let currentPage = 1;
@@ -22,7 +22,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }, 350));
 
     document.getElementById('btnNewRegistration')?.addEventListener('click', openRegModal);
-    document.getElementById('registrationForm')?.addEventListener('submit', submitRegistration);
+    document.getElementById('registrationForm')?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const button = event.submitter || form.querySelector('[type="submit"]');
+        withButtonLoading(button, () => submitRegistration(event), 'Registering...');
+    });
 
     // Toggle between existing / new participant
     document.querySelectorAll('input[name="participantMode"]').forEach(r => {
@@ -38,15 +43,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function loadOpenEvents() {
+    const select = document.getElementById('selectEvent');
+    if (select) {
+        select.disabled = true;
+        select.innerHTML = '<option value="">Loading events...</option>';
+    }
     try {
         const res = await GET('/events/index.php?status=open&limit=50');
-        const select = document.getElementById('selectEvent');
         if (!select) return;
 
         select.innerHTML = '<option value="">— Select Event —</option>' +
             (res.data || []).map(e => `<option value="${e.id}">${e.name} (${e.start_date})</option>`).join('');
     } catch (err) {
+        if (select) select.innerHTML = '<option value="">Failed to load events</option>';
         showToast('Failed to load events', 'error');
+    } finally {
+        if (select) select.disabled = false;
     }
 }
 
@@ -54,6 +66,7 @@ async function loadRegistrations() {
     const tbody = document.getElementById('registrationsTableBody');
     if (!tbody) return;
 
+    renderTableSkeleton(tbody, 7);
     if (!selectedEventId) {
         tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">Select an event to view registrations</td></tr>`;
         return;
@@ -97,6 +110,7 @@ async function loadRegistrations() {
             pag.innerHTML = '';
         }
     } catch (err) {
+        renderTableMessage(tbody, 7, 'Failed to load registrations');
         showToast(err.message, 'error');
     }
 }
@@ -123,6 +137,9 @@ async function searchParticipants() {
         box.innerHTML = '';
         return;
     }
+    box.innerHTML = Array.from({ length: 3 }, () => `
+        <div class="list-group-item" aria-hidden="true"><span class="skeleton-line"></span></div>
+    `).join('');
     try {
         const res = await GET(`/participants/index.php?search=${encodeURIComponent(q)}&limit=8`);
         box.innerHTML = (res.data || []).map(p => `

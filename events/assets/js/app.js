@@ -1,4 +1,4 @@
-import { APP_BASE_URL, me, logout } from './api.js?v=3';
+import { APP_BASE_URL, me, logout } from './api.js?v=4';
 
 const rolesByPage = {
     dashboard: [1, 2, 3, 4], events: [1, 2], participants: [1, 2],

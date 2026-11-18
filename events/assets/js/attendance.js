@@ -2,7 +2,7 @@
  * Attendance Module Script
  */
 
-import { GET, POST, formatDate, showToast, debounce } from './api.js';
+import { GET, POST, formatDate, showToast, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=4';
 
 let selectedEventId = null;
 let selectedDayId = null;
@@ -25,7 +25,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.getElementById('searchAtt')?.addEventListener('input', debounce(loadAttendance, 350));
 
-    document.getElementById('btnCheckIn')?.addEventListener('click', () => doAttendance());
+    document.getElementById('btnCheckIn')?.addEventListener('click', (event) => {
+        submitAttendance(event.currentTarget);
+    });
 
     const attLookup = document.getElementById('attLookup');
     attLookup?.addEventListener('input', () => {
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     attLookup?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            doAttendance();
+            submitAttendance();
         }
     });
 
@@ -57,14 +59,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function loadEvents() {
+    const select = document.getElementById('attSelectEvent');
+    if (select) {
+        select.disabled = true;
+        select.innerHTML = '<option value="">Loading events...</option>';
+    }
     try {
         const res = await GET('/events/index.php?limit=50');
-        const select = document.getElementById('attSelectEvent');
         if (!select) return;
         select.innerHTML = '<option value="">— Select Event —</option>' +
             (res.data || []).map(e => `<option value="${e.id}">${e.name}</option>`).join('');
     } catch (err) {
+        if (select) select.innerHTML = '<option value="">Failed to load events</option>';
         showToast('Failed to load events', 'error');
+    } finally {
+        if (select) select.disabled = false;
     }
 }
 
@@ -102,6 +111,7 @@ async function loadAttendance() {
     const tbody = document.getElementById('attendanceTableBody');
     if (!tbody) return;
 
+    renderTableSkeleton(tbody, 6);
     if (!selectedEventId) {
         tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-4">Select an event</td></tr>`;
         return;
@@ -132,6 +142,7 @@ async function loadAttendance() {
             </tr>
         `).join('') || `<tr><td colspan="6" class="text-center text-muted py-4">No attendance records</td></tr>`;
     } catch (err) {
+        renderTableMessage(tbody, 6, 'Failed to load attendance');
         showToast(err.message, 'error');
     }
 }
@@ -195,7 +206,11 @@ function selectLookupSuggestion(btn) {
     hidden.value = btn.dataset.registrationId || '';
     lookupInput.value = btn.dataset.label || '';
     hideLookupSuggestions();
-    doAttendance();
+    submitAttendance();
+}
+
+function submitAttendance(button = document.getElementById('btnCheckIn')) {
+    return withButtonLoading(button, () => doAttendance(), 'Checking in...');
 }
 
 async function doAttendance() {

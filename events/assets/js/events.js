@@ -2,7 +2,7 @@
  * Events Management Script
  */
 
-import { GET, POST, PUT, DEL, formatDate, statusBadge, showToast, confirmAction, debounce } from './api.js';
+import { GET, POST, PUT, DEL, formatDate, statusBadge, showToast, confirmAction, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=4';
 
 let currentPage = 1;
 
@@ -20,7 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnAddEvent')?.addEventListener('click', () => openEventModal());
-    document.getElementById('eventForm')?.addEventListener('submit', saveEvent);
+    document.getElementById('eventForm')?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const button = event.submitter || form.querySelector('[type="submit"]');
+        withButtonLoading(button, () => saveEvent(event), 'Saving...');
+    });
 });
 
 async function loadEvents() {
@@ -28,6 +33,18 @@ async function loadEvents() {
     const status = document.getElementById('filterStatus')?.value || '';
     const container = document.getElementById('eventsContainer');
     const tableBody = document.getElementById('eventsTableBody');
+    renderTableSkeleton(tableBody, 6);
+    if (container) {
+        container.innerHTML = Array.from({ length: 6 }, () => `
+            <div class="col-md-6 col-xl-4">
+                <div class="card skeleton-card p-3" aria-hidden="true">
+                    <span class="skeleton-line skeleton-line-wide mb-3"></span>
+                    <span class="skeleton-line mb-3"></span>
+                    <span class="skeleton-line"></span>
+                </div>
+            </div>
+        `).join('');
+    }
 
     try {
         let url = `/events/index.php?page=${currentPage}&limit=12`;
@@ -63,8 +80,8 @@ async function loadEvents() {
                     <td><span class="badge text-bg-light">${ev.participant_count || 0}</span></td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-primary" onclick="window.editEvent(${ev.id})" title="Edit"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-outline-danger" onclick="window.deleteEvent(${ev.id})" title="Delete"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-outline-primary" onclick="window.editEvent(${ev.id}, this)" title="Edit"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-outline-danger" onclick="window.deleteEvent(${ev.id}, this)" title="Delete"><i class="bi bi-trash"></i></button>
                         </div>
                     </td>
                 </tr>
@@ -75,6 +92,10 @@ async function loadEvents() {
         renderPagination(res.meta);
 
     } catch (err) {
+        renderTableMessage(tableBody, 6, 'Failed to load events');
+        if (container) {
+            container.innerHTML = '<div class="col-12"><p class="text-center text-danger py-4 mb-0">Failed to load events</p></div>';
+        }
         showToast(err.message || 'Failed to load events', 'error');
     }
 }
@@ -98,8 +119,8 @@ function eventCard(ev) {
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <span class="badge text-bg-primary">${ev.participant_count || 0} registered</span>
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-primary" onclick="window.editEvent(${ev.id})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-outline-danger" onclick="window.deleteEvent(${ev.id})"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-outline-primary" onclick="window.editEvent(${ev.id}, this)"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-outline-danger" onclick="window.deleteEvent(${ev.id}, this)"><i class="bi bi-trash"></i></button>
                         </div>
                     </div>
                 </div>
@@ -179,22 +200,26 @@ async function saveEvent(e) {
     }
 }
 
-window.editEvent = async function (id) {
-    try {
-        const res = await GET(`/events/single.php?id=${id}`);
-        openEventModal(res.data);
-    } catch (err) {
-        showToast(err.message, 'error');
-    }
+window.editEvent = async function (id, button) {
+    return withButtonLoading(button, async () => {
+        try {
+            const res = await GET(`/events/single.php?id=${id}`);
+            openEventModal(res.data);
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    }, 'Loading...');
 };
 
-window.deleteEvent = async function (id) {
+window.deleteEvent = async function (id, button) {
     if (!confirmAction('Delete this event? This cannot be undone.')) return;
-    try {
-        await DEL(`/events/single.php?id=${id}`);
-        showToast('Event deleted');
-        loadEvents();
-    } catch (err) {
-        showToast(err.message, 'error');
-    }
+    return withButtonLoading(button, async () => {
+        try {
+            await DEL(`/events/single.php?id=${id}`);
+            showToast('Event deleted');
+            loadEvents();
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    }, 'Deleting...');
 };

@@ -264,6 +264,103 @@ body {
     background: rgba(0, 0, 0, 0.5);
 }
 
+/* Skeleton placeholders */
+.skeleton-line {
+    display: block;
+    width: 72%;
+    height: 0.85rem;
+    border-radius: 0.35rem;
+    background: linear-gradient(90deg, var(--bs-secondary-bg) 25%, var(--bs-tertiary-bg) 50%, var(--bs-secondary-bg) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-line-wide {
+    width: 92%;
+}
+
+.skeleton-row td {
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
+}
+
+.skeleton-card {
+    min-height: 12rem;
+}
+
+.skeleton-card .skeleton-line {
+    margin-bottom: 0.75rem;
+}
+
+.chart-skeleton {
+    position: absolute;
+    inset: 1rem;
+    display: flex;
+    align-items: end;
+    justify-content: space-around;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+}
+
+.chart-loading-container {
+    position: relative;
+    min-height: 200px;
+}
+
+.chart-skeleton span {
+    width: 12%;
+    height: 45%;
+    border-radius: 0.35rem 0.35rem 0 0;
+    background: linear-gradient(90deg, var(--bs-secondary-bg) 25%, var(--bs-tertiary-bg) 50%, var(--bs-secondary-bg) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.chart-skeleton span:nth-child(2) {
+    height: 70%;
+}
+
+.chart-skeleton span:nth-child(3) {
+    height: 55%;
+}
+
+.chart-skeleton span:nth-child(4) {
+    height: 90%;
+}
+
+.chart-skeleton span:nth-child(5) {
+    height: 62%;
+}
+
+.form-skeleton .form-control,
+.form-skeleton .form-select {
+    color: transparent;
+    background-image: linear-gradient(90deg, var(--bs-secondary-bg) 25%, var(--bs-tertiary-bg) 50%, var(--bs-secondary-bg) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+    to {
+        background-position: -200% 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton-line {
+        animation: none;
+    }
+
+    .chart-skeleton span {
+        animation: none;
+    }
+
+    .form-skeleton .form-control,
+    .form-skeleton .form-select {
+        animation: none;
+    }
+}
+
 /* Empty state */
 .empty-state {
     padding: 3rem 1rem;

@@ -2,7 +2,7 @@
  * Participants Management Script
  */
 
-import { GET, POST, PUT, DEL, formatDate, showToast, confirmAction, debounce } from './api.js';
+import { GET, POST, PUT, DEL, formatDate, showToast, confirmAction, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=4';
 
 let currentPage = 1;
 
@@ -20,13 +20,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btnAddParticipant')?.addEventListener('click', () => openParticipantModal());
-    document.getElementById('participantForm')?.addEventListener('submit', saveParticipant);
+    document.getElementById('participantForm')?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const button = event.submitter || form.querySelector('[type="submit"]');
+        withButtonLoading(button, () => saveParticipant(event), 'Saving...');
+    });
 });
 
 async function loadParticipants() {
     const search = document.getElementById('searchParticipants')?.value || '';
     const gender = document.getElementById('filterGender')?.value || '';
     const tbody = document.getElementById('participantsTableBody');
+    renderTableSkeleton(tbody, 8);
 
     try {
         let url = `/participants/index.php?page=${currentPage}&limit=15`;
@@ -52,9 +58,9 @@ async function loadParticipants() {
                 <td><span class="badge text-bg-light">${p.registration_count || 0}</span></td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <button class="btn btn-outline-primary" onclick="window.editParticipant(${p.id})" title="Edit"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-outline-info" onclick="window.viewParticipant(${p.id})" title="View"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-outline-danger" onclick="window.deleteParticipant(${p.id})" title="Delete"><i class="bi bi-trash"></i></button>
+                        <button class="btn btn-outline-primary" onclick="window.editParticipant(${p.id}, this)" title="Edit"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-outline-info" onclick="window.viewParticipant(${p.id}, this)" title="View"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-outline-danger" onclick="window.deleteParticipant(${p.id}, this)" title="Delete"><i class="bi bi-trash"></i></button>
                     </div>
                 </td>
             </tr>
@@ -62,6 +68,7 @@ async function loadParticipants() {
 
         renderPagination(res.meta);
     } catch (err) {
+        renderTableMessage(tbody, 8, 'Failed to load participants');
         showToast(err.message || 'Failed to load participants', 'error');
     }
 }
@@ -148,49 +155,55 @@ async function saveParticipant(e) {
     }
 }
 
-window.editParticipant = async function (id) {
-    try {
-        const res = await GET(`/participants/single.php?id=${id}`);
-        openParticipantModal(res.data);
-    } catch (err) {
-        showToast(err.message, 'error');
-    }
+window.editParticipant = async function (id, button) {
+    return withButtonLoading(button, async () => {
+        try {
+            const res = await GET(`/participants/single.php?id=${id}`);
+            openParticipantModal(res.data);
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    }, 'Loading...');
 };
 
-window.viewParticipant = async function (id) {
-    try {
-        const res = await GET(`/participants/single.php?id=${id}`);
-        const p = res.data;
-        const regs = (p.registrations || []).map(r =>
-            `<li>${r.event_name} — <code>${r.registration_number}</code> (${formatDate(r.registration_date)})</li>`
-        ).join('') || '<li class="text-muted">No registrations</li>';
+window.viewParticipant = async function (id, button) {
+    return withButtonLoading(button, async () => {
+        try {
+            const res = await GET(`/participants/single.php?id=${id}`);
+            const p = res.data;
+            const regs = (p.registrations || []).map(r =>
+                `<li>${r.event_name} — <code>${r.registration_number}</code> (${formatDate(r.registration_date)})</li>`
+            ).join('') || '<li class="text-muted">No registrations</li>';
 
-        document.getElementById('viewParticipantBody').innerHTML = `
-            <div class="row g-3">
-                <div class="col-md-6"><strong>Name:</strong> ${p.surname} ${p.first_name} ${p.other_name || ''}</div>
-                <div class="col-md-3"><strong>Gender:</strong> ${p.gender}</div>
-                <div class="col-md-3"><strong>Phone:</strong> ${p.phone}</div>
-                <div class="col-md-6"><strong>Email:</strong> ${p.email || '—'}</div>
-                <div class="col-md-6"><strong>Church:</strong> ${p.church || '—'}</div>
-                <div class="col-md-6"><strong>State:</strong> ${p.state || '—'}</div>
-                <div class="col-md-6"><strong>Occupation:</strong> ${p.occupation || '—'}</div>
-                <div class="col-12"><strong>Address:</strong> ${p.address || '—'}</div>
-                <div class="col-12"><strong>Registrations:</strong><ul class="mb-0 mt-1">${regs}</ul></div>
-            </div>
-        `;
-        new bootstrap.Modal(document.getElementById('viewParticipantModal')).show();
-    } catch (err) {
-        showToast(err.message, 'error');
-    }
+            document.getElementById('viewParticipantBody').innerHTML = `
+                <div class="row g-3">
+                    <div class="col-md-6"><strong>Name:</strong> ${p.surname} ${p.first_name} ${p.other_name || ''}</div>
+                    <div class="col-md-3"><strong>Gender:</strong> ${p.gender}</div>
+                    <div class="col-md-3"><strong>Phone:</strong> ${p.phone}</div>
+                    <div class="col-md-6"><strong>Email:</strong> ${p.email || '—'}</div>
+                    <div class="col-md-6"><strong>Church:</strong> ${p.church || '—'}</div>
+                    <div class="col-md-6"><strong>State:</strong> ${p.state || '—'}</div>
+                    <div class="col-md-6"><strong>Occupation:</strong> ${p.occupation || '—'}</div>
+                    <div class="col-12"><strong>Address:</strong> ${p.address || '—'}</div>
+                    <div class="col-12"><strong>Registrations:</strong><ul class="mb-0 mt-1">${regs}</ul></div>
+                </div>
+            `;
+            new bootstrap.Modal(document.getElementById('viewParticipantModal')).show();
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    }, 'Loading...');
 };
 
-window.deleteParticipant = async function (id) {
+window.deleteParticipant = async function (id, button) {
     if (!confirmAction('Delete this participant? All related registrations will also be removed.')) return;
-    try {
-        await DEL(`/participants/single.php?id=${id}`);
-        showToast('Participant deleted');
-        loadParticipants();
-    } catch (err) {
-        showToast(err.message, 'error');
-    }
+    return withButtonLoading(button, async () => {
+        try {
+            await DEL(`/participants/single.php?id=${id}`);
+            showToast('Participant deleted');
+            loadParticipants();
+        } catch (err) {
+            showToast(err.message, 'error');
+        }
+    }, 'Deleting...');
 };

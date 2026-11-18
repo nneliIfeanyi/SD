@@ -12,9 +12,9 @@ required deployment path prefix included. The frontend appends routes such as
 
 The API allows credentialed CORS requests from `http://localhost` and
 `https://sulejadisciples.com` (the `/SD` path is not part of the browser
-origin). The browser sends session requests with `credentials: 'include'`;
-cross-origin cookie and same-site settings must be compatible with the
-frontend and API domains.
+origin). The browser sends session requests with `credentials: 'include'`.
+Because the production frontend and API are on different sites, the API's
+session cookie must use `SameSite=None; Secure`.
 
 Role-based page and navigation checks run in frontend JavaScript and are for
 navigation only. The API remains responsible for enforcing authentication and

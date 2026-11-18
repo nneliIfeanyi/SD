@@ -2,7 +2,7 @@
  * Login Page Script
  */
 
-import { APP_BASE_URL, login, me, showToast } from './api.js?v=3';
+import { APP_BASE_URL, login, me, showToast } from './api.js?v=4';
 
 document.addEventListener('DOMContentLoaded', () => {
     me().then(() => {

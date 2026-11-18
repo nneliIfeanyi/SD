@@ -2,9 +2,16 @@
  * Dashboard Page Script
  */
 
-import { GET, formatDate, showToast } from './api.js';
+import { GET, formatDate, renderTableMessage, renderTableSkeleton, setChartLoading, showToast } from './api.js?v=4';
 
 document.addEventListener('DOMContentLoaded', async () => {
+    renderTableSkeleton(document.getElementById('recentActivityBody'), 4, 5);
+    ['statTotalEvents', 'statTotalParticipants', 'statTodayReg', 'statTodayAtt', 'statOpenEvents', 'statTotalReg']
+        .forEach((id) => document.getElementById(id)?.classList.add('skeleton-line'));
+    const monthlyChart = document.getElementById('monthlyChart');
+    const eventChart = document.getElementById('eventChart');
+    setChartLoading(monthlyChart, true);
+    setChartLoading(eventChart, true);
     try {
         const res = await GET('/reports/index.php?type=summary');
         const { stats, monthly_registrations, event_participation } = res.data;
@@ -25,12 +32,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderMonthlyChart(monthly_registrations || []);
         // Event participation chart
         renderEventChart(event_participation || []);
+        setChartLoading(monthlyChart, false);
+        setChartLoading(eventChart, false);
 
         // Load recent activities
         // (simplified - using last registrations as proxy)
         loadRecentActivity();
 
     } catch (err) {
+        setChartLoading(monthlyChart, false);
+        setChartLoading(eventChart, false);
+        ['statTotalEvents', 'statTotalParticipants', 'statTodayReg', 'statTodayAtt', 'statOpenEvents', 'statTotalReg']
+            .forEach((id) => {
+                const element = document.getElementById(id);
+                element?.classList.remove('skeleton-line');
+                if (element) element.textContent = '—';
+            });
         console.error(err);
         showToast('Failed to load dashboard data', 'error');
     }
@@ -38,7 +55,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function setText(id, value) {
     const el = document.getElementById(id);
-    if (el) el.textContent = value ?? '0';
+    if (el) {
+        el.classList.remove('skeleton-line');
+        el.textContent = value ?? '0';
+    }
 }
 
 function renderMonthlyChart(data) {
@@ -90,9 +110,10 @@ function renderEventChart(data) {
 }
 
 async function loadRecentActivity() {
+    const tbody = document.getElementById('recentActivityBody');
+    renderTableSkeleton(tbody, 4, 5);
     try {
         const res = await GET('/registration/index.php?limit=5');
-        const tbody = document.getElementById('recentActivityBody');
         if (!tbody) return;
 
         if (!res.data?.length) {
@@ -109,6 +130,7 @@ async function loadRecentActivity() {
             </tr>
         `).join('');
     } catch (e) {
-        // silent
+        renderTableMessage(tbody, 4, 'Failed to load recent activity');
+        showToast(e.message || 'Failed to load recent activity', 'error');
     }
 }

@@ -2,7 +2,7 @@
  * Reports Module Script
  */
 
-import { GET, showToast, exportToCSV, formatDate } from './api.js';
+import { GET, showToast, exportToCSV, formatDate, renderTableMessage, renderTableSkeleton, setChartLoading, withButtonLoading } from './api.js?v=4';
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadEventsForFilter();
@@ -15,30 +15,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.getElementById('btnExportRegistrations')?.addEventListener('click', exportRegistrations);
-    document.getElementById('btnLoadEventReport')?.addEventListener('click', loadEventRegistrations);
+    document.getElementById('btnLoadEventReport')?.addEventListener('click', (event) => {
+        withButtonLoading(event.currentTarget, () => loadEventRegistrations(), 'Loading...');
+    });
 });
 
 async function loadEventsForFilter() {
+    const select = document.getElementById('reportEventFilter');
+    const select2 = document.getElementById('exportEventSelect');
+    [select, select2].forEach((element) => {
+        if (element) {
+            element.disabled = true;
+            element.innerHTML = '<option value="">Loading events...</option>';
+        }
+    });
     try {
         const res = await GET('/events/index.php?limit=50');
-        const select = document.getElementById('reportEventFilter');
-        const select2 = document.getElementById('exportEventSelect');
         const opts = '<option value="">All Events</option>' +
             (res.data || []).map(e => `<option value="${e.id}">${e.name}</option>`).join('');
         if (select) select.innerHTML = opts;
         if (select2) select2.innerHTML = (res.data || []).map(e => `<option value="${e.id}">${e.name}</option>`).join('');
-    } catch (e) { /* silent */ }
+    } catch (e) {
+        [select, select2].forEach((element) => {
+            if (element) element.innerHTML = '<option value="">Failed to load events</option>';
+        });
+        showToast(e.message || 'Failed to load events', 'error');
+    } finally {
+        [select, select2].forEach((element) => {
+            if (element) element.disabled = false;
+        });
+    }
 }
 
 async function loadGenderChart() {
     const eventId = document.getElementById('reportEventFilter')?.value || '';
+    const ctx = document.getElementById('genderChart');
+    setChartLoading(ctx, true);
     try {
         let url = '/reports/index.php?type=gender';
         if (eventId) url += `&event_id=${eventId}`;
         const res = await GET(url);
         const data = res.data || [];
 
-        const ctx = document.getElementById('genderChart');
         if (!ctx) return;
 
         // Destroy previous if exists
@@ -60,18 +78,21 @@ async function loadGenderChart() {
         });
     } catch (err) {
         console.error(err);
+    } finally {
+        setChartLoading(ctx, false);
     }
 }
 
 async function loadStateChart() {
     const eventId = document.getElementById('reportEventFilter')?.value || '';
+    const ctx = document.getElementById('stateChart');
+    setChartLoading(ctx, true);
     try {
         let url = '/reports/index.php?type=state';
         if (eventId) url += `&event_id=${eventId}`;
         const res = await GET(url);
         const data = res.data || [];
 
-        const ctx = document.getElementById('stateChart');
         if (!ctx) return;
         if (ctx._chart) ctx._chart.destroy();
 
@@ -95,6 +116,8 @@ async function loadStateChart() {
         });
     } catch (err) {
         console.error(err);
+    } finally {
+        setChartLoading(ctx, false);
     }
 }
 
@@ -105,6 +128,7 @@ async function loadEventRegistrations() {
         return;
     }
 
+    renderTableSkeleton(document.getElementById('eventReportBody'), 7);
     try {
         const res = await GET(`/reports/index.php?type=event_registrations&event_id=${eventId}`);
         const rows = res.data || [];
@@ -126,6 +150,7 @@ async function loadEventRegistrations() {
         window._reportRows = rows;
         showToast(`Loaded ${rows.length} records`);
     } catch (err) {
+        renderTableMessage(document.getElementById('eventReportBody'), 7, 'Failed to load report');
         showToast(err.message, 'error');
     }
 }
