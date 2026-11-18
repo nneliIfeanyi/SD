@@ -2,17 +2,19 @@
  * Registration Module Script
  */
 
-import { GET, POST, formatDate, showToast, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=4';
+import { GET, POST, formatDate, showToast, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=5';
 
 let selectedEventId = null;
 let currentPage = 1;
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadOpenEvents();
+document.addEventListener('DOMContentLoaded', () => {
+    const newRegistrationButton = document.getElementById('btnNewRegistration');
+    if (newRegistrationButton) newRegistrationButton.disabled = true;
 
     document.getElementById('selectEvent')?.addEventListener('change', (e) => {
         selectedEventId = e.target.value ? parseInt(e.target.value) : null;
         currentPage = 1;
+        updateNewRegistrationButton();
         loadRegistrations();
     });
 
@@ -21,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         loadRegistrations();
     }, 350));
 
-    document.getElementById('btnNewRegistration')?.addEventListener('click', openRegModal);
+    newRegistrationButton?.addEventListener('click', openRegModal);
     document.getElementById('registrationForm')?.addEventListener('submit', (event) => {
         event.preventDefault();
         const form = event.currentTarget;
@@ -40,6 +42,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Search existing participants
     document.getElementById('searchExistingParticipant')?.addEventListener('input', debounce(searchParticipants, 300));
+
+    loadOpenEvents();
 });
 
 async function loadOpenEvents() {
@@ -52,14 +56,45 @@ async function loadOpenEvents() {
         const res = await GET('/events/index.php?status=open&limit=50');
         if (!select) return;
 
+        const events = res.data || [];
+        if (!events.length) {
+            select.innerHTML = '<option value="">No open events available</option>';
+            selectedEventId = null;
+            renderTableMessage(document.getElementById('registrationsTableBody'), 7, 'No open events available');
+            return;
+        }
+
+        const defaultEvent = chooseDefaultEvent(events);
         select.innerHTML = '<option value="">— Select Event —</option>' +
-            (res.data || []).map(e => `<option value="${e.id}">${e.name} (${e.start_date})</option>`).join('');
+            events.map(e => `<option value="${e.id}">${e.name} (${e.start_date})</option>`).join('');
+        select.value = String(defaultEvent.id);
+        selectedEventId = Number(defaultEvent.id);
+        currentPage = 1;
+        loadRegistrations();
     } catch (err) {
         if (select) select.innerHTML = '<option value="">Failed to load events</option>';
         showToast('Failed to load events', 'error');
     } finally {
         if (select) select.disabled = false;
+        updateNewRegistrationButton();
     }
+}
+
+function chooseDefaultEvent(events) {
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    const activeEvent = events.find((event) => event.start_date <= today && event.end_date >= today);
+    if (activeEvent) return activeEvent;
+
+    const upcomingEvents = events
+        .filter((event) => event.start_date > today)
+        .sort((a, b) => a.start_date.localeCompare(b.start_date));
+    return upcomingEvents[0] || events[0];
+}
+
+function updateNewRegistrationButton() {
+    const button = document.getElementById('btnNewRegistration');
+    if (button) button.disabled = !selectedEventId;
 }
 
 async function loadRegistrations() {
@@ -116,8 +151,10 @@ async function loadRegistrations() {
 }
 
 function openRegModal() {
+    const select = document.getElementById('selectEvent');
+    selectedEventId = select?.value ? Number(select.value) : null;
     if (!selectedEventId) {
-        showToast('Please select an event first', 'warning');
+        showToast('No open event is available. Open an event before registering.', 'warning');
         return;
     }
     document.getElementById('registrationForm').reset();
@@ -188,7 +225,10 @@ async function submitRegistration(e) {
 
     try {
         const res = await POST('/registration/index.php', payload);
-        showToast(`Registration successful! Number: ${res.data.registration_number}`, 'success');
+        const attendanceMessage = res.data.attendance_marked
+            ? ` Participant automatically marked present for Day ${res.data.attendance_day_number}.`
+            : '';
+        showToast(`Registration successful! Number: ${res.data.registration_number}.${attendanceMessage}`, 'success');
         bootstrap.Modal.getInstance(document.getElementById('registrationModal')).hide();
         loadRegistrations();
     } catch (err) {

@@ -19,3 +19,16 @@ session cookie must use `SameSite=None; Secure`.
 Role-based page and navigation checks run in frontend JavaScript and are for
 navigation only. The API remains responsible for enforcing authentication and
 permissions.
+
+Protected pages show a full-page skeleton while the session is verified, then
+use section-level skeleton placeholders while API data loads.
+
+Registrations are automatically recorded as present for Day 1 of every event.
+Multi-day events continue to require separate check-in for each later day.
+
+Super Admins can create, edit, assign one of the four fixed roles to, and
+permanently delete user accounts from Settings. The API prevents self-deletion
+and removal or deactivation of the last active Super Admin.
+
+The Registration page defaults to an open event that is currently underway,
+or the nearest upcoming open event when none is underway.
