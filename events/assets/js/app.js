@@ -1,4 +1,4 @@
-import { me, logout } from './api.js';
+import { APP_BASE_URL, me, logout } from './api.js?v=3';
 
 const rolesByPage = {
     dashboard: [1, 2, 3, 4], events: [1, 2], participants: [1, 2],
@@ -21,7 +21,7 @@ function setIdentity(user) {
 async function handleLogout(event) {
     event.preventDefault();
     try { await logout(); } catch (error) { /* Always return to the static login route. */ }
-    window.location.assign('/events/');
+    window.location.assign(APP_BASE_URL.href);
 }
 
 function initLayout() {
@@ -54,8 +54,11 @@ async function bootstrap() {
         const user = response.user || response.data?.user || {};
         const page = currentPage();
         const roleId = Number(user.role_id);
-        if (!user.role_id || !rolesByPage[page]?.includes(roleId)) {
-            window.location.replace('/events/pages/dashboard.html');
+        if (!user.role_id || !rolesByPage.dashboard.includes(roleId)) {
+            throw new Error('Unable to verify your account permissions.');
+        }
+        if (!rolesByPage[page]?.includes(roleId)) {
+            window.location.replace(new URL('pages/dashboard.html', APP_BASE_URL).href);
             return;
         }
         setIdentity(user);
@@ -66,7 +69,20 @@ async function bootstrap() {
         document.documentElement.classList.remove('auth-pending');
         initLayout();
     } catch (error) {
-        window.location.replace('/events/');
+        if (error.message === 'Unauthorized') return;
+
+        console.error('Unable to load the event admin page:', error);
+        const message = document.createElement('p');
+        message.textContent = 'Unable to load the page. Please check the API connection and try again.';
+        const retry = document.createElement('button');
+        retry.type = 'button';
+        retry.textContent = 'Try again';
+        retry.addEventListener('click', () => window.location.reload());
+        const container = document.createElement('main');
+        container.className = 'container py-5';
+        container.append(message, retry);
+        document.body.replaceChildren(container);
+        document.documentElement.classList.remove('auth-pending');
     }
 }
 

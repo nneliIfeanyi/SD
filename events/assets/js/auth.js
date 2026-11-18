@@ -2,11 +2,11 @@
  * Login Page Script
  */
 
-import { login, me, showToast } from './api.js';
+import { APP_BASE_URL, login, me, showToast } from './api.js?v=3';
 
 document.addEventListener('DOMContentLoaded', () => {
     me().then(() => {
-        window.location.replace('/events/pages/dashboard.html');
+        window.location.replace(new URL('pages/dashboard.html', APP_BASE_URL).href);
     }).catch(() => {});
 
     const form = document.getElementById('loginForm');
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await login(username, password);
             showToast(res.message || 'Login successful', 'success');
             setTimeout(() => {
-                window.location.href = '/events/pages/dashboard.html';
+                window.location.href = new URL('pages/dashboard.html', APP_BASE_URL).href;
             }, 600);
         } catch (err) {
             showToast(err.message || 'Login failed', 'error');

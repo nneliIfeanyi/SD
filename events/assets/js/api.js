@@ -4,6 +4,7 @@
  */
 
 const API_ORIGIN = (window.APP_API_URL || '').replace(/\/+$/, '');
+export const APP_BASE_URL = new URL('../../', import.meta.url);
 
 /**
  * Show Bootstrap toast notification
@@ -63,13 +64,22 @@ async function request(method, endpoint, data = null, options = {}) {
 
     try {
         const res = await fetch(url, config);
-        const json = await res.json().catch(() => ({}));
 
         if (res.status === 401) {
-            if (window.location.pathname !== '/events/' && !window.location.pathname.endsWith('/index.html')) {
-                window.location.replace('/events/');
+            if (window.location.pathname !== APP_BASE_URL.pathname && !window.location.pathname.endsWith('/index.html')) {
+                window.location.replace(APP_BASE_URL.href);
             }
             throw new Error('Unauthorized');
+        }
+
+        let json;
+        try {
+            json = await res.json();
+        } catch (error) {
+            throw new Error(`Invalid API response (${res.status})`);
+        }
+        if (!json || typeof json !== 'object' || Array.isArray(json)) {
+            throw new Error(`Invalid API response (${res.status})`);
         }
 
         if (!res.ok || json.success === false) {
