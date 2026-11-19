@@ -446,7 +446,17 @@
             await navigator.clipboard.writeText(shareUrl);
             showToast("Post link copied to clipboard", "bi-clipboard-check text-success");
           } else {
-            window.prompt("Copy this link:", shareUrl);
+            const modalElement = document.getElementById("shareLinkModal");
+            const shareLinkInput = document.getElementById("shareLinkInput");
+            if (!modalElement || !shareLinkInput || !window.bootstrap?.Modal) {
+              throw new Error("Share link modal is unavailable.");
+            }
+            shareLinkInput.value = shareUrl;
+            modalElement.addEventListener("shown.bs.modal", () => {
+              shareLinkInput.focus();
+              shareLinkInput.select();
+            }, { once: true });
+            window.bootstrap.Modal.getOrCreateInstance(modalElement).show();
           }
         } catch (err) {
           console.warn("Share failed:", err);

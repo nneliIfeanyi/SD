@@ -2,7 +2,7 @@
  * Dashboard Page Script
  */
 
-import { GET, formatDate, renderTableMessage, renderTableSkeleton, setChartLoading, showToast } from './api.js?v=4';
+import { GET, formatDate, renderTableMessage, renderTableSkeleton, setChartLoading, showToast } from './api.js?v=5';
 
 document.addEventListener('DOMContentLoaded', async () => {
     renderTableSkeleton(document.getElementById('recentActivityBody'), 4, 5);

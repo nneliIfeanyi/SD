@@ -2,7 +2,7 @@
  * Reports Module Script
  */
 
-import { GET, showToast, exportToCSV, formatDate, renderTableMessage, renderTableSkeleton, setChartLoading, withButtonLoading } from './api.js?v=4';
+import { GET, showToast, exportToCSV, formatDate, renderTableMessage, renderTableSkeleton, setChartLoading, withButtonLoading } from './api.js?v=5';
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadEventsForFilter();

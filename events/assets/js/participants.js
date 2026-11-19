@@ -2,7 +2,7 @@
  * Participants Management Script
  */
 
-import { GET, POST, PUT, DEL, formatDate, showToast, confirmAction, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=4';
+import { GET, POST, PUT, DEL, formatDate, showToast, confirmAction, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=5';
 
 let currentPage = 1;
 
@@ -196,7 +196,7 @@ window.viewParticipant = async function (id, button) {
 };
 
 window.deleteParticipant = async function (id, button) {
-    if (!confirmAction('Delete this participant? All related registrations will also be removed.')) return;
+    if (!await confirmAction('Delete this participant? All related registrations will also be removed.', 'Delete')) return;
     return withButtonLoading(button, async () => {
         try {
             await DEL(`/participants/single.php?id=${id}`);

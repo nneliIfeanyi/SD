@@ -3,6 +3,9 @@
  * Handles all HTTP requests with authentication & error handling
  */
 
+import { OfflineError, showOfflineState } from './offline-state.js?v=1';
+export { OfflineError };
+
 const API_ORIGIN = (window.APP_API_URL || '').replace(/\/+$/, '');
 export const APP_BASE_URL = new URL('../../', import.meta.url);
 
@@ -118,6 +121,11 @@ async function request(method, endpoint, data = null, options = {}) {
     }
 
     try {
+        if (navigator.onLine === false) {
+            showOfflineState();
+            throw new OfflineError();
+        }
+
         const res = await fetch(url, config);
 
         if (res.status === 401) {
@@ -144,6 +152,11 @@ async function request(method, endpoint, data = null, options = {}) {
 
         return json;
     } catch (err) {
+        if (err instanceof OfflineError) throw err;
+        if (err instanceof TypeError || navigator.onLine === false) {
+            showOfflineState();
+            throw new OfflineError();
+        }
         if (err.message !== 'Unauthorized') {
             console.error('API Error:', err);
         }
@@ -214,11 +227,59 @@ export function debounce(fn, delay = 300) {
     };
 }
 
-/**
- * Confirm dialog
- */
-export function confirmAction(message = 'Are you sure?') {
-    return window.confirm(message);
+let confirmationActive = false;
+
+export function confirmAction(message = 'Are you sure?', confirmLabel = 'Confirm') {
+    if (!window.bootstrap?.Modal) {
+        return Promise.reject(new Error('Bootstrap modal support is unavailable.'));
+    }
+    if (confirmationActive) return Promise.resolve(false);
+
+    let modalElement = document.getElementById('appConfirmModal');
+    if (!modalElement) {
+        modalElement = document.createElement('div');
+        modalElement.id = 'appConfirmModal';
+        modalElement.className = 'modal fade';
+        modalElement.tabIndex = -1;
+        modalElement.setAttribute('aria-labelledby', 'appConfirmModalLabel');
+        modalElement.setAttribute('aria-hidden', 'true');
+        modalElement.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="appConfirmModalLabel">Please confirm</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="appConfirmMessage"></div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="appConfirmButton"></button>
+                    </div>
+                </div>
+            </div>`;
+        document.body.append(modalElement);
+    }
+
+    const messageElement = modalElement.querySelector('#appConfirmMessage');
+    const confirmButton = modalElement.querySelector('#appConfirmButton');
+    messageElement.textContent = message;
+    confirmButton.textContent = confirmLabel;
+
+    const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+    confirmationActive = true;
+    return new Promise((resolve) => {
+        let confirmed = false;
+        confirmButton.onclick = () => {
+            confirmed = true;
+            modal.hide();
+        };
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            confirmButton.onclick = null;
+            confirmationActive = false;
+            resolve(confirmed);
+        }, { once: true });
+        modal.show();
+    });
 }
 
 /**

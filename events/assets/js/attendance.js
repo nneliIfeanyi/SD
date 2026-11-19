@@ -2,7 +2,7 @@
  * Attendance Module Script
  */
 
-import { GET, POST, formatDate, showToast, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=4';
+import { GET, POST, formatDate, showToast, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=5';
 
 let selectedEventId = null;
 let selectedDayId = null;

@@ -121,6 +121,25 @@
     </div>
   </div>
 
+  <div class="modal fade" id="shareLinkModal" tabindex="-1" aria-labelledby="shareLinkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title" id="shareLinkModalLabel">Share this post</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label for="shareLinkInput" class="form-label">Copy this link</label>
+          <input type="text" class="form-control" id="shareLinkInput" readonly>
+          <p class="form-text mb-0">The link is selected. Copy it to share this post.</p>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary rounded-pill px-3" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ============================= -->
   <!-- DELETE CONFIRMATION MODAL      -->
   <!-- ============================= -->
@@ -187,7 +206,7 @@
   <!-- Shared config (API base URL) -->
   <script src="js/config.js"></script>
   <!-- App logic (fetches posts from the PHP API) -->
-  <script src="js/script.js"></script>
+  <script src="js/script.js?v=2"></script>
 </body>
 
 </html>

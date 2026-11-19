@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f8fafc">
+    <title>Connection lost | Event Admin</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+            font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+            color: #1f2937;
+            background: #f8fafc;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            display: grid;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1.5rem;
+            place-items: center;
+            background:
+                radial-gradient(ellipse at 50% 0, rgba(79, 70, 229, 0.1), transparent 55%),
+                #f8fafc;
+        }
+
+        main {
+            width: min(100%, 30rem);
+            padding: clamp(2rem, 7vw, 3.5rem);
+            border: 1px solid #e5e7eb;
+            border-radius: 1.25rem;
+            background: #fff;
+            box-shadow: 0 1.5rem 4rem rgba(15, 23, 42, 0.12);
+            text-align: center;
+        }
+
+        .icon {
+            display: grid;
+            width: 4rem;
+            height: 4rem;
+            margin: 0 auto 1.5rem;
+            place-items: center;
+            border-radius: 1.25rem;
+            background: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .brand {
+            margin-bottom: 0.5rem;
+            color: #4f46e5;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+        }
+
+        h1 { margin: 0 0 0.75rem; font-size: clamp(1.6rem, 5vw, 2rem); }
+        p { color: #64748b; line-height: 1.6; }
+
+        .status {
+            margin: 1.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        button {
+            min-width: 10rem;
+            padding: 0.75rem 1.25rem;
+            border: 0;
+            border-radius: 0.6rem;
+            background: #4f46e5;
+            color: white;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 600;
+        }
+
+        button:disabled { cursor: wait; opacity: 0.65; }
+
+        @media (prefers-color-scheme: dark) {
+            :root { color: #f8fafc; background: #111827; }
+            body { background: radial-gradient(ellipse at 50% 0, rgba(99, 102, 241, 0.16), transparent 55%), #111827; }
+            main { border-color: #374151; background: #1f2937; box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.35); }
+            p { color: #cbd5e1; }
+        }
+    </style>
+</head>
+<body>
+    <main role="status" aria-live="assertive">
+        <div class="icon" aria-hidden="true">!</div>
+        <p class="brand">EVENT ADMIN</p>
+        <h1 id="offlineTitle">You're offline</h1>
+        <p id="offlineDescription">Check your internet connection. The event admin will be ready when you reconnect.</p>
+        <p class="status" id="offlineStatus">Waiting for your connection</p>
+        <button id="retryButton" type="button" disabled>Waiting to reconnect</button>
+    </main>
+    <script>
+        const title = document.getElementById('offlineTitle');
+        const description = document.getElementById('offlineDescription');
+        const status = document.getElementById('offlineStatus');
+        const retryButton = document.getElementById('retryButton');
+
+        function updateConnectionState(state) {
+            const copy = {
+                offline: {
+                    title: "You're offline",
+                    description: 'Check your internet connection. The event admin will be ready when you reconnect.',
+                    status: 'Waiting for your connection',
+                    disabled: true,
+                    button: 'Waiting to reconnect'
+                },
+                interrupted: {
+                    title: 'Connection interrupted',
+                    description: "We couldn't reach Event Admin. Check your connection and try again.",
+                    status: 'Unable to reach Event Admin',
+                    disabled: false,
+                    button: 'Try again'
+                },
+                restored: {
+                    title: 'Connection restored',
+                    description: 'You are back online. Reload the page to continue.',
+                    status: 'Your connection is available',
+                    disabled: false,
+                    button: 'Try again'
+                }
+            }[state];
+
+            title.textContent = copy.title;
+            description.textContent = copy.description;
+            status.textContent = copy.status;
+            retryButton.disabled = copy.disabled;
+            retryButton.textContent = copy.button;
+        }
+
+        retryButton.addEventListener('click', () => window.location.reload());
+        window.addEventListener('online', () => updateConnectionState('restored'));
+        window.addEventListener('offline', () => updateConnectionState('offline'));
+        updateConnectionState('interrupted');
+    </script>
+</body>
+</html>

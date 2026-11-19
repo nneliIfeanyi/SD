@@ -2,7 +2,7 @@
  * Login Page Script
  */
 
-import { APP_BASE_URL, login, me, showToast } from './api.js?v=4';
+import { APP_BASE_URL, login, me, OfflineError, showToast } from './api.js?v=5';
 
 document.addEventListener('DOMContentLoaded', () => {
     me().then(() => {
@@ -34,7 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = new URL('pages/dashboard.html', APP_BASE_URL).href;
             }, 600);
         } catch (err) {
-            showToast(err.message || 'Login failed', 'error');
+            if (!(err instanceof OfflineError)) {
+                showToast(err.message || 'Login failed', 'error');
+            }
             btn.disabled = false;
             spinner?.classList.add('d-none');
         }

@@ -1,0 +1,92 @@
+.offline-state {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background:
+        radial-gradient(ellipse at 50% 0, rgba(79, 70, 229, 0.1), transparent 55%),
+        var(--bs-tertiary-bg, #f8fafc);
+    color: var(--bs-body-color, #1f2937);
+}
+
+.offline-card {
+    width: min(100%, 30rem);
+    padding: clamp(2rem, 7vw, 3.5rem);
+    border: 1px solid var(--bs-border-color, #e5e7eb);
+    border-radius: 1.25rem;
+    background: var(--bs-body-bg, #fff);
+    box-shadow: 0 1.5rem 4rem rgba(15, 23, 42, 0.12);
+    text-align: center;
+}
+
+.offline-state-icon {
+    display: grid;
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1.5rem;
+    place-items: center;
+    border-radius: 1.25rem;
+    background: rgba(79, 70, 229, 0.1);
+    color: #4f46e5;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.offline-eyebrow {
+    margin-bottom: 0.5rem;
+    color: #4f46e5;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.offline-card h1 {
+    margin-bottom: 0.75rem;
+    font-size: clamp(1.6rem, 5vw, 2rem);
+    font-weight: 700;
+}
+
+.offline-description {
+    margin-bottom: 1.5rem;
+    color: var(--bs-secondary-color, #64748b);
+    line-height: 1.6;
+}
+
+.offline-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    margin-bottom: 1.5rem;
+    color: var(--bs-secondary-color, #64748b);
+    font-size: 0.875rem;
+}
+
+.offline-status-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: #f59e0b;
+}
+
+.offline-state .btn {
+    min-width: 10rem;
+    padding: 0.7rem 1.25rem;
+    font-weight: 600;
+}
+
+.offline-state .btn:disabled {
+    cursor: wait;
+}
+
+[data-bs-theme="dark"] .offline-state {
+    background:
+        radial-gradient(ellipse at 50% 0, rgba(99, 102, 241, 0.16), transparent 55%),
+        var(--bs-tertiary-bg, #111827);
+}
+
+[data-bs-theme="dark"] .offline-card {
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.35);
+}

@@ -1,4 +1,4 @@
-import { APP_BASE_URL, me, logout } from './api.js?v=4';
+import { APP_BASE_URL, me, logout, OfflineError } from './api.js?v=5';
 
 const rolesByPage = {
     dashboard: [1, 2, 3, 4], events: [1, 2], participants: [1, 2],
@@ -70,6 +70,10 @@ async function bootstrap() {
         initLayout();
     } catch (error) {
         if (error.message === 'Unauthorized') return;
+        if (error instanceof OfflineError) {
+            document.documentElement.classList.remove('auth-pending');
+            return;
+        }
 
         console.error('Unable to load the event admin page:', error);
         const message = document.createElement('p');

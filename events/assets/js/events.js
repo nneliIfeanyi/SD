@@ -2,7 +2,7 @@
  * Events Management Script
  */
 
-import { GET, POST, PUT, DEL, formatDate, statusBadge, showToast, confirmAction, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=4';
+import { GET, POST, PUT, DEL, formatDate, statusBadge, showToast, confirmAction, debounce, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=5';
 
 let currentPage = 1;
 
@@ -212,7 +212,7 @@ window.editEvent = async function (id, button) {
 };
 
 window.deleteEvent = async function (id, button) {
-    if (!confirmAction('Delete this event? This cannot be undone.')) return;
+    if (!await confirmAction('Delete this event? This cannot be undone.', 'Delete')) return;
     return withButtonLoading(button, async () => {
         try {
             await DEL(`/events/single.php?id=${id}`);
