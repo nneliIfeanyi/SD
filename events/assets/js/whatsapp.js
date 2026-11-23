@@ -1,17 +1,52 @@
-import { GET, PUT, debounce, formatDate, showToast, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=5';
-import { whatsappChatUrl } from './whatsapp-helpers.js?v=2';
+import { GET, PUT, debounce, formatDate, showToast, confirmAction, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=5';
+import { whatsappChatUrl, validateWhatsappSettings } from './whatsapp-helpers.js?v=3';
+import { chooseDefaultEvent } from './event-helpers.js?v=1';
 
 const labels = { not_invited: 'Not invited', invited: 'Invited', joined: 'Joined' };
 let rows = null;
 let loadVersion = 0;
 let currentPage = 1;
 let pageMeta = null;
+let settingsVersion = 0;
+let settingsEventId = null;
+let settingsRevision = null;
+let settingsDirty = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('invitationEvent').addEventListener('change', () => {
-        document.getElementById('groupLink').value = '';
+    document.getElementById('invitationEvent').addEventListener('change', async (event) => {
+        const select = event.currentTarget;
+        const nextEventId = select.value;
+        if (settingsDirty) {
+            select.value = settingsEventId;
+            select.disabled = true;
+            try {
+                if (!await confirmAction('Discard unsaved invitation settings?', 'Discard')) return;
+                select.value = nextEventId;
+            } catch (error) {
+                showToast(error.message || 'Unable to confirm event change', 'error');
+                return;
+            } finally {
+                select.disabled = false;
+            }
+        }
         currentPage = 1;
+        loadSettings();
         loadRegistrations();
+    });
+    document.getElementById('saveInvitationSettings').addEventListener('click', saveSettings);
+    document.getElementById('reloadInvitationSettings').addEventListener('click', async () => {
+        try {
+            if (settingsDirty && !await confirmAction('Discard unsaved invitation settings?', 'Discard')) return;
+            loadSettings();
+        } catch (error) {
+            showToast(error.message || 'Unable to confirm reload', 'error');
+        }
+    });
+    ['groupLink', 'countryCode'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+            settingsDirty = true;
+            document.getElementById('invitationSettingsStatus').textContent = 'Unsaved changes';
+        });
     });
     const search = debounce(loadRegistrations, 350);
     document.getElementById('invitationSearch').addEventListener('input', () => {
@@ -63,9 +98,94 @@ async function loadEvents() {
         select.replaceChildren(new Option(events.length ? 'Select an event' : 'No events available', ''));
         events.forEach(event => select.add(new Option(event.name, event.id)));
         select.disabled = !events.length;
+        const defaultEvent = chooseDefaultEvent(events.filter(event => event.status === 'open'));
+        if (defaultEvent) {
+            select.value = String(defaultEvent.id);
+            loadSettings();
+            loadRegistrations();
+        }
     } catch (error) {
         select.replaceChildren(new Option('Failed to load events', ''));
         showToast(error.message || 'Failed to load events', 'error');
+    }
+}
+
+function setSettingsControls(enabled, allowReload) {
+    document.getElementById('groupLink').disabled = !enabled;
+    document.getElementById('countryCode').disabled = !enabled;
+    document.getElementById('saveInvitationSettings').disabled = !enabled;
+    document.getElementById('reloadInvitationSettings').disabled = !allowReload;
+}
+
+async function loadSettings() {
+    const version = ++settingsVersion;
+    const eventId = document.getElementById('invitationEvent').value;
+    const status = document.getElementById('invitationSettingsStatus');
+    settingsEventId = null;
+    settingsRevision = null;
+    settingsDirty = false;
+    document.getElementById('groupLink').value = '';
+    document.getElementById('countryCode').value = '';
+    setSettingsControls(false, false);
+    if (!eventId) {
+        status.textContent = 'Select an event to load its settings.';
+        return;
+    }
+    status.textContent = 'Loading settings...';
+    try {
+        const response = await GET(`/registration/whatsapp-settings.php?event_id=${encodeURIComponent(eventId)}`);
+        if (version !== settingsVersion) return;
+        settingsEventId = eventId;
+        settingsRevision = response.data.revision;
+        document.getElementById('groupLink').value = response.data.invite_link;
+        document.getElementById('countryCode').value = response.data.country_code;
+        status.textContent = response.data.revision ? 'Saved settings' : 'No saved settings yet';
+        setSettingsControls(true, true);
+    } catch (error) {
+        if (version !== settingsVersion) return;
+        status.textContent = 'Could not load settings. Use Reload to try again.';
+        setSettingsControls(false, true);
+        showToast(error.message || 'Failed to load invitation settings', 'error');
+    }
+}
+
+async function saveSettings() {
+    const eventId = document.getElementById('invitationEvent').value;
+    if (!eventId || settingsEventId !== eventId || settingsRevision === null) {
+        showToast('Load invitation settings before saving.', 'warning');
+        return;
+    }
+    let settings;
+    try {
+        settings = validateWhatsappSettings(document.getElementById('countryCode').value, document.getElementById('groupLink').value);
+    } catch (error) {
+        showToast(error.message, 'error');
+        return;
+    }
+    const version = settingsVersion;
+    const status = document.getElementById('invitationSettingsStatus');
+    setSettingsControls(false, false);
+    status.textContent = 'Saving settings...';
+    try {
+        const response = await PUT('/registration/whatsapp-settings.php', {
+            event_id: Number(eventId),
+            invite_link: settings.groupLink,
+            country_code: settings.countryCode,
+            expected_revision: settingsRevision
+        });
+        if (version !== settingsVersion) return;
+        settingsRevision = response.data.revision;
+        document.getElementById('groupLink').value = response.data.invite_link;
+        document.getElementById('countryCode').value = response.data.country_code;
+        settingsDirty = false;
+        status.textContent = 'Saved settings';
+        showToast('Invitation settings saved');
+    } catch (error) {
+        if (version !== settingsVersion) return;
+        status.textContent = 'Settings were not saved. Reload if another user changed them.';
+        showToast(error.message || 'Failed to save invitation settings', 'error');
+    } finally {
+        if (version === settingsVersion) setSettingsControls(true, true);
     }
 }
 
@@ -179,6 +299,9 @@ function makeButton(label, style, onClick) {
 
 function openChat(row) {
     try {
+        if (settingsEventId !== document.getElementById('invitationEvent').value) {
+            throw new Error('Load invitation settings before opening WhatsApp.');
+        }
         const url = whatsappChatUrl(row.phone, document.getElementById('countryCode').value, document.getElementById('groupLink').value);
         window.open(url, '_blank', 'noopener,noreferrer');
     } catch (error) {
