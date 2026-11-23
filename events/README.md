@@ -32,3 +32,19 @@ and removal or deactivation of the last active Super Admin.
 
 The Registration page defaults to an open event that is currently underway,
 or the nearest upcoming open event when none is underway.
+
+The Registration page links to WhatsApp Invitations for Super Admin,
+Registration and Attendance roles. Select an event to see all its registrations,
+including their registration status. Paste an optional group invite link and
+use Open WhatsApp to prepare an individual message. The link is not saved and
+is cleared on event change. The local country code applies to phone numbers
+starting with 0; international numbers should include their country code.
+Staff must check consent and manually mark invitations and confirmed group
+membership; opening WhatsApp does not send a message or change the status.
+The list shows up to 15 registrations per page. Search and invitation-status
+filters cover the entire selected event; the status counts remain event-wide.
+
+Deploy the corresponding API changes and apply
+`database/whatsapp_invitations.sql` in the separate API project to existing
+databases before using this page. The tracking status and its last editor are
+shared between authorized users. Group membership is not verified by the app.

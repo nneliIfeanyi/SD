@@ -2,7 +2,7 @@ import { APP_BASE_URL, me, logout, OfflineError } from './api.js?v=5';
 
 const rolesByPage = {
     dashboard: [1, 2, 3, 4], events: [1, 2], participants: [1, 2],
-    registration: [1, 2, 3], attendance: [1, 2, 3], reports: [1, 2, 4], settings: [1]
+    registration: [1, 2, 3], whatsapp: [1, 2, 3], attendance: [1, 2, 3], reports: [1, 2, 4], settings: [1]
 };
 
 function currentPage() {
