@@ -21,8 +21,19 @@ export function whatsappChatUrl(phone, countryCode, groupLink) {
     }
 
     const link = groupLink.trim();
-    if (link && !/^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+\/?$/.test(link)) {
-        throw new Error('Enter a valid WhatsApp group invite link.');
+    if (link) {
+        let inviteUrl;
+        try {
+            inviteUrl = new URL(link);
+        } catch (error) {
+            if (!(error instanceof TypeError)) throw error;
+            throw new Error('Enter a valid WhatsApp group invite link.');
+        }
+        if (inviteUrl.protocol !== 'https:' || inviteUrl.hostname !== 'chat.whatsapp.com' ||
+            inviteUrl.port || inviteUrl.username || inviteUrl.password ||
+            !/^\/[A-Za-z0-9]+\/?$/.test(inviteUrl.pathname)) {
+            throw new Error('Enter a valid WhatsApp group invite link.');
+        }
     }
     const url = new URL(`https://wa.me/${number}`);
     if (link) {

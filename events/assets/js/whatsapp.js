@@ -1,5 +1,5 @@
 import { GET, PUT, debounce, formatDate, showToast, renderTableMessage, renderTableSkeleton, withButtonLoading } from './api.js?v=5';
-import { whatsappChatUrl } from './whatsapp-helpers.js?v=1';
+import { whatsappChatUrl } from './whatsapp-helpers.js?v=2';
 
 const labels = { not_invited: 'Not invited', invited: 'Invited', joined: 'Joined' };
 let rows = null;

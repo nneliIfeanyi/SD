@@ -10,9 +10,18 @@ test('formats local and international numbers without changing the invite link',
     assert.equal(new URL(whatsappChatUrl('0044 7700 900123', '234', '')).pathname, '/447700900123');
 });
 
+test('preserves WhatsApp invite link query parameters', () => {
+    const link = 'https://chat.whatsapp.com/CODE?s=cl&p=a&iam=2';
+    const url = new URL(whatsappChatUrl('08012345678', '234', link));
+    assert.equal(url.searchParams.get('text'), `Hello, here is the WhatsApp group invite link: ${link}`);
+});
+
 test('rejects invalid numbers, country codes and invite links', () => {
     assert.throws(() => whatsappChatUrl('08012345678', '', ''));
     assert.throws(() => whatsappChatUrl('phone 123', '234', ''));
     assert.throws(() => whatsappChatUrl('+123', '234', ''));
     assert.throws(() => whatsappChatUrl('+2348012345678', '234', 'https://example.com/invite'));
+    assert.throws(() => whatsappChatUrl('+2348012345678', '234', 'https://chat.whatsapp.com.example.com/CODE?s=cl'));
+    assert.throws(() => whatsappChatUrl('+2348012345678', '234', 'https://user@chat.whatsapp.com/CODE'));
+    assert.throws(() => whatsappChatUrl('+2348012345678', '234', 'https://chat.whatsapp.com/CODE/extra'));
 });
