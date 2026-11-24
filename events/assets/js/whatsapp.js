@@ -58,9 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPagination(null);
         const tbody = document.getElementById('invitationRows');
         if (document.getElementById('invitationEvent').value) {
-            renderTableSkeleton(tbody, 7);
+            renderTableSkeleton(tbody, 5);
         } else {
-            renderTableMessage(tbody, 7, 'Select an event');
+            renderTableMessage(tbody, 5, 'Select an event');
         }
         search();
     });
@@ -198,10 +198,10 @@ async function loadRegistrations() {
     renderCounts(null);
     renderPagination(null);
     if (!eventId) {
-        renderTableMessage(tbody, 7, 'Select an event');
+        renderTableMessage(tbody, 5, 'Select an event');
         return;
     }
-    renderTableSkeleton(tbody, 7);
+    renderTableSkeleton(tbody, 5);
     try {
         const params = new URLSearchParams({
             event_id: eventId,
@@ -218,7 +218,7 @@ async function loadRegistrations() {
         renderRows();
     } catch (error) {
         if (version !== loadVersion) return;
-        renderTableMessage(tbody, 7, 'Failed to load registrations');
+        renderTableMessage(tbody, 5, 'Failed to load registrations');
         showToast(error.message || 'Failed to load registrations', 'error');
     }
 }
@@ -251,16 +251,14 @@ function renderRows() {
     const tbody = document.getElementById('invitationRows');
     tbody.replaceChildren();
     if (!rows.length) {
-        renderTableMessage(tbody, 7, 'No matching registrations');
+        renderTableMessage(tbody, 5, 'No matching registrations');
         return;
     }
     rows.forEach(row => {
         const tr = document.createElement('tr');
         const values = [
-            row.registration_number,
             [row.surname, row.first_name, row.other_name].filter(Boolean).join(' '),
             row.phone,
-            row.registration_status,
             labels[row.invitation_status],
             row.updated_at ? `${formatDate(row.updated_at, true)}${row.updated_by_name ? ` by ${row.updated_by_name}` : ''}` : 'Not updated'
         ];
