@@ -11,7 +11,6 @@ let settingsVersion = 0;
 let settingsEventId = null;
 let settingsRevision = null;
 let settingsDirty = false;
-const hiddenActions = new Set();
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('invitationEvent').addEventListener('change', async (event) => {
@@ -270,24 +269,16 @@ function renderRows() {
         const actions = document.createElement('td');
         const group = document.createElement('div');
         group.className = 'd-flex flex-wrap gap-1';
-        const actionsHidden = hiddenActions.has(String(row.id));
-        if (!actionsHidden) {
-            group.append(makeButton('Open WhatsApp', 'bi-whatsapp', 'btn-outline-success', () => {
-                if (openChat(row)) {
-                    hiddenActions.add(String(row.id));
-                    renderRows();
-                }
-            }));
+        if (row.invitation_status === 'not_invited') {
+            group.append(makeButton('Open WhatsApp', 'bi-whatsapp', 'btn-outline-success', () => openChat(row)));
         }
-        if (!actionsHidden && row.invitation_status !== 'invited') {
+        if (row.invitation_status !== 'invited') {
             group.append(makeButton('Mark invited', 'bi-check-circle', 'btn-outline-primary', event => updateStatus(row, 'invited', event.currentTarget)));
         }
         if (row.invitation_status !== 'joined') {
             group.append(makeButton('Mark joined', 'bi-people', 'btn-outline-primary', event => updateStatus(row, 'joined', event.currentTarget)));
         }
-        if (row.invitation_status !== 'not_invited') {
-            group.append(makeButton('Reset', 'bi-arrow-counterclockwise', 'btn-outline-secondary', event => updateStatus(row, 'not_invited', event.currentTarget)));
-        }
+        group.append(makeButton('Reset', 'bi-arrow-counterclockwise', 'btn-outline-secondary', event => updateStatus(row, 'not_invited', event.currentTarget)));
         actions.append(group);
         tr.append(actions);
         tbody.append(tr);
@@ -315,10 +306,8 @@ function openChat(row) {
         }
         const url = whatsappChatUrl(row.phone, document.getElementById('countryCode').value, document.getElementById('groupLink').value);
         window.open(url, '_blank', 'noopener,noreferrer');
-        return true;
     } catch (error) {
         showToast(error.message, 'error');
-        return false;
     }
 }
 
@@ -333,8 +322,6 @@ async function updateStatus(row, status, button) {
                 expected_status: row.invitation_status,
                 status
             });
-            if (status === 'invited') hiddenActions.add(String(row.id));
-            if (status === 'not_invited') hiddenActions.delete(String(row.id));
             showToast('Invitation status updated');
             if (document.getElementById('invitationEvent').value === eventId) await loadRegistrations();
         } catch (error) {
