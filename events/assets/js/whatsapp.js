@@ -11,6 +11,7 @@ let settingsVersion = 0;
 let settingsEventId = null;
 let settingsRevision = null;
 let settingsDirty = false;
+const modifiedRows = new Set();
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('invitationEvent').addEventListener('change', async (event) => {
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         currentPage = 1;
         loadSettings();
+        modifiedRows.clear();
         loadRegistrations();
     });
     document.getElementById('saveInvitationSettings').addEventListener('click', saveSettings);
@@ -278,7 +280,9 @@ function renderRows() {
         if (row.invitation_status !== 'joined') {
             group.append(makeButton('Mark joined', 'bi-people', 'btn-outline-primary', event => updateStatus(row, 'joined', event.currentTarget)));
         }
-        group.append(makeButton('Reset', 'bi-arrow-counterclockwise', 'btn-outline-secondary', event => updateStatus(row, 'not_invited', event.currentTarget)));
+        if (modifiedRows.has(String(row.id))) {
+            group.append(makeButton('Reset', 'bi-arrow-counterclockwise', 'btn-outline-secondary', event => updateStatus(row, 'not_invited', event.currentTarget)));
+        }
         actions.append(group);
         tr.append(actions);
         tbody.append(tr);
@@ -322,6 +326,7 @@ async function updateStatus(row, status, button) {
                 expected_status: row.invitation_status,
                 status
             });
+            modifiedRows.add(String(row.id));
             showToast('Invitation status updated');
             if (document.getElementById('invitationEvent').value === eventId) await loadRegistrations();
         } catch (error) {
